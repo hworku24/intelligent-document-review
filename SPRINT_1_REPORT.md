@@ -1,9 +1,8 @@
-# Sprint 1 Report — Reproducible Local Development
+# Sprint 1 Report: Reproducible Local Development
 
 ## Result
 
-The local VERA development stack is installed and its build, test, database,
-and runtime paths have been verified on Apple Silicon with Node.js 22.
+The local VERA development stack is installed and its build, test, database, and runtime paths have been verified on Apple Silicon with Node.js 22.
 
 ## Environment
 
@@ -17,7 +16,7 @@ and runtime paths have been verified on Apple Silicon with Node.js 22.
 | Docker Compose | 5.3.0 |
 | MySQL | 8.0.46, running as `vera-mysql` |
 
-## Completed work
+## Completed Work
 
 - Started the repository's local MySQL Compose service.
 - Verified the documented `vera_user` can connect to the `vera` database.
@@ -27,13 +26,12 @@ and runtime paths have been verified on Apple Silicon with Node.js 22.
 - Corrected the backend ESLint TypeScript project so test files can be parsed.
 - Corrected one backend regular-expression lint error.
 - Added `scripts/verify-local.sh` as a safe, non-destructive verification entry point.
-- Expanded local-development troubleshooting for Node versions, Docker, ports,
-  and Apple Silicon.
+- Expanded local-development troubleshooting for Node versions, Docker, ports, and Apple Silicon.
 
-## Verification evidence
+## Verification Evidence
 
 - Backend formatting: passed.
-- Backend lint: passed with 34 inherited warnings and no errors.
+- Backend lint: passed with 34 existing warnings and no errors.
 - Backend tests: 32 passed.
 - Backend TypeScript build: passed.
 - Backend runtime: `GET http://127.0.0.1:3000/health` returned `{"status":"ok"}`.
@@ -44,25 +42,21 @@ and runtime paths have been verified on Apple Silicon with Node.js 22.
 - CDK TypeScript build: passed.
 - Review-agent tests: 11 passed and 2 AWS-dependent tests skipped.
 
-## Baseline findings
+## Baseline Findings
 
-### Frontend lint is not yet a valid gate
+### Frontend Lint Is Not Yet a Valid Gate
 
-The inherited frontend lint setup is internally inconsistent:
+The current frontend lint setup is internally inconsistent:
 
 - `eslint.config.js` imports `typescript-eslint`, but that package is not declared.
-- The legacy `.eslintrc.cjs` points at the solution-style `tsconfig.json`, whose
-  source files live in referenced projects instead of its own `include` list.
-- Running an equivalent flat configuration also exposes a large existing lint
-  backlog that should not be disguised as a Sprint 1 regression.
+- The legacy `.eslintrc.cjs` points at the solution-style `tsconfig.json`, whose source files live in referenced projects instead of its own `include` list.
+- Running an equivalent flat configuration also exposes a large existing lint backlog that should be addressed separately from Sprint 1 setup work.
 
-The all-package verifier therefore runs frontend formatting and the strict
-TypeScript production build, but temporarily omits frontend ESLint. Repairing
-the lint policy and baselining existing findings should be tracked separately.
+The all-package verifier therefore runs frontend formatting and the strict TypeScript production build, but temporarily omits frontend ESLint. Repairing the lint policy and baselining current findings should be tracked separately.
 
-### Dependency audit findings
+### Dependency Audit Findings
 
-Clean locked installs reported existing npm audit findings:
+Clean locked installs reported current npm audit findings:
 
 | Package | Findings |
 | --- | ---: |
@@ -70,11 +64,9 @@ Clean locked installs reported existing npm audit findings:
 | Frontend | 16 total: 1 low, 3 moderate, 12 high |
 | CDK | 7 total: 2 low, 5 high |
 
-No automatic audit fixes were applied because forced upgrades may introduce
-breaking changes. Findings require exploitability review and controlled
-dependency updates.
+No automatic audit fixes were applied because forced upgrades may introduce breaking changes. Findings require exploitability review and controlled dependency updates.
 
-## Local commands
+## Local Commands
 
 Start the database:
 
@@ -103,5 +95,4 @@ cd frontend
 npm run dev
 ```
 
-Full sign-in still requires values for a deployed Cognito User Pool in
-`frontend/.env.local`, as documented in `docs/en/local-development.md`.
+Full sign-in still requires values for a deployed Cognito User Pool in `frontend/.env.local`, as documented in `docs/en/local-development.md`.
