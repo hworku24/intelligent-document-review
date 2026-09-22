@@ -1,282 +1,357 @@
-# Review & Assessment Powered by Intelligent Documentation (RAPID)
+# RAPID
 
-| Document                                                            | Language                                                                                 |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| README (this page)                                                  | [English](README.md) \| [日本語](./docs/ja/README_ja.md)                                  |
-| Deployment Options (CloudShell options, closed network, AI models)  | [English](./docs/en/deployment-options.md) \| [日本語](./docs/ja/deployment-options.md)   |
-| Developer Guide (architecture, troubleshooting)                     | [English](./docs/en/developer-guide.md) \| [日本語](./docs/ja/developer-guide.md)         |
-| Local Development (run the app on your machine)                     | [English](./docs/en/local-development.md) \| [日本語](./docs/ja/local-development.md)     |
-| Example Use Cases (industry sample scenarios and documents)         | [English](./examples/en/README.md) \| [日本語](./examples/ja/README.md)                   |
+RAPID is an AI-assisted document review application built on AWS.
 
-This sample is a document review solution powered by generative AI (Amazon Bedrock). It streamlines review processes involving extensive documents and complex checklists using a Human in the Loop approach. It supports the entire process from checklist structuring to AI-assisted review and final human judgment, reducing review time and improving quality.
+It helps a reviewer turn a policy, regulation, guideline, or specification into
+a structured checklist. The reviewer can then upload another document and ask
+the application to assess it against that checklist.
 
-![](./docs/imgs/en_review_result.png)
+The result is not just a Pass or Fail label. RAPID also shows the model's
+reasoning, confidence, source references, and tool activity so a person can
+review the evidence and make the final decision.
 
-> [!Important]
-> This tool is intended only for decision support and does not provide professional judgment or legal advice. All final judgments must be made by qualified human experts.
+This repository started from the AWS sample
+[Review and Assessment Powered by Intelligent Documentation](https://github.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation).
+We are rebuilding and adapting it in small, testable sprints rather than
+treating the sample as a finished production system.
 
-> [!Warning]
-> This sample may undergo breaking changes without prior notice.
+> RAPID is a decision-support tool. It does not replace legal, medical,
+> compliance, engineering, or other professional judgment. A qualified person
+> must make the final decision.
 
-## How It Works
+## What the application does
 
-RAPID performs document review in two phases:
+A typical review looks like this:
 
-1. **Build a checklist** – Upload a document (PDF) — such as a regulation, guideline, or specification — that describes what to check and where, and AI extracts the review criteria as a checklist.
-2. **Run a review** – Upload the documents to be reviewed (PDF or images) and pick the checklist to compare them against, and AI evaluates each item as **Pass / Fail**, presenting a confidence score, the AI's rationale, and the documents it referenced.
+1. An administrator uploads a document that describes the review rules.
+2. Amazon Bedrock extracts those rules into a checklist.
+3. A reviewer checks and edits the generated checklist.
+4. The reviewer uploads the documents they want to assess.
+5. RAPID evaluates each checklist item and provides a result, confidence score,
+   explanation, and source references.
+6. A human reviewer accepts, overrides, or comments on the result.
 
-RAPID runs on AWS serverless services (Amazon CloudFront, API Gateway + Lambda, Step Functions, Aurora Serverless v2, and Amazon Bedrock / AgentCore). See the [Developer Guide](./docs/en/developer-guide.md#architecture) for the architecture diagram.
+The repository includes sample documents in [`examples`](./examples) so the
+workflow can be tested without using private information.
 
-## Key Features
+## Current project status
 
-- **AI checklist extraction** – Converts regulations, guidelines, specifications, and the like into a checklist.
-- **AI document review** – Judges each checklist item as Pass / Fail and presents a confidence score, the AI's rationale, and the documents it referenced.
-- **Per-checklist-item model selection** – Assigns any generative AI model to each checklist item, so you can spend higher-cost models only on the difficult checks.
-- **Agent tools** – Equips a checklist item with **Amazon Bedrock Knowledge Bases** (RAG), the **AgentCore Code Interpreter** (code execution for calculations and validation), and **MCP (Model Context Protocol)** servers when the check needs knowledge from external tools.
-- **Customizable prompts** – Lets you review and edit the system prompts used for checklist extraction on a dedicated Prompt Management screen.
-- **Example use cases gallery** – Ships with industry sample scenarios (real estate, IT, manufacturing, healthcare, corporate governance, and more), so you can try RAPID's document review right away.
-- **Closed / private network deployment** – Runs RAPID without exposing it to the internet. Combined with **AWS Site-to-Site VPN** or **AWS Direct Connect**, you can use RAPID from your on-premises network over fully private connectivity. See [Closed / Private Network Deployment](#closed--private-network-deployment).
-- **Concurrency control** – Keeps reviews within Amazon Bedrock's quotas by controlling how many run concurrently.
+Sprint 1 is complete. The local database, backend, frontend, infrastructure
+package, and Python review agent have all been installed and verified.
 
-<details>
-<summary><strong>Screenshots of the main screens</strong> (click to expand)</summary>
+Current verification results:
 
-![](./docs/imgs/en_new_review.png)
+- Backend: 32 tests passing
+- AWS CDK: 12 tests passing
+- Python review agent: 11 tests passing, with 2 AWS-dependent tests skipped
+- Backend, frontend, and CDK production builds passing
+- Local backend health endpoint verified
+- Local frontend development server verified
 
-![](./docs/imgs/en_new_review_floor_plan.png)
+See [SPRINT_PLAN.md](./SPRINT_PLAN.md) for the complete roadmap and
+[SPRINT_1_REPORT.md](./SPRINT_1_REPORT.md) for the detailed setup record.
 
-![](./docs/imgs/en_review_result.png)
+## Technology overview
 
-![](./docs/imgs/en_review_result_ng.png)
+| Area             | Technology                                 |
+| ---------------- | ------------------------------------------ |
+| Frontend         | React, TypeScript, Vite, Tailwind CSS, SWR |
+| Backend          | Fastify, TypeScript, Prisma                |
+| Local database   | MySQL 8 in Docker                          |
+| Cloud database   | Amazon Aurora MySQL Serverless v2          |
+| Authentication   | Amazon Cognito                             |
+| Document storage | Amazon S3                                  |
+| AI processing    | Amazon Bedrock and Strands Agents          |
+| Workflows        | AWS Step Functions and Amazon SQS          |
+| Agent runtime    | Amazon Bedrock AgentCore                   |
+| Infrastructure   | AWS CDK                                    |
+| Python tooling   | Python 3.13 and uv                         |
 
-</details>
+## Repository structure
 
-## Key Use Cases
-
-- **Product specification compliance review** – Verify that product specifications meet requirements and industry standards, and let reviewers concentrate on the final confirmation.
-- **Technical manual quality verification** – Check that technical manuals comply with internal guidelines and industry standards, and detect missing information and inconsistencies automatically.
-- **Procurement document compliance verification** – Extract the required information from procurement documents and proposals spanning hundreds of pages, and have humans verify the compliance results.
-
-Concrete scenarios with sample documents are available in the [examples gallery](./examples/en/README.md).
-
-## Deployment Methods
-
-### 1. Deployment Using CloudShell (For Those Who Want to Start Easily)
-
-This method allows you to deploy directly from your browser using AWS CloudShell, without preparing a local environment.
-
-1. **Enable Amazon Bedrock models**
-
-   Access Bedrock Model Access from the AWS Management Console and enable access to the models you plan to use (see [AI Model Customization](./docs/en/deployment-options.md#ai-model-customization) for the model list). By default, the Oregon (us-west-2) region is used for Amazon Bedrock, but you can change it with the `--bedrock-region` option.
-
-2. **Open AWS CloudShell**
-
-   Open [AWS CloudShell](https://console.aws.amazon.com/cloudshell/home) in the region where you want to deploy.
-
-3. **Run the deployment script**
-
-   ```bash
-   wget -O - https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh | bash
-   ```
-
-   This command automatically executes everything from repository cloning to deployment. Upon completion, the frontend URL and the API URL are displayed; open the frontend URL in your browser to start using the application.
-
-4. **Specify custom options (optional)**
-
-   ```bash
-   wget -O - https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh | bash -s -- --ipv4-ranges '["192.168.0.0/16"]'
-   ```
-
-   Options such as `--ipv4-ranges` and `--closed-network` correspond to the CDK parameters described in [Parameter Customization](#parameter-customization). For the full list of options, see [CloudShell Deployment Options](./docs/en/deployment-options.md#cloudshell-deployment-options).
-
-> [!Important]
-> With this deployment method, if you do not set option parameters, anyone who knows the URL can sign up. For production use, we strongly recommend adding IP address restrictions and disabling self-signup (`--cognito-self-signup false`).
-
-### 2. Deployment from Local Environment (Recommended for Customization)
-
-> [!Note]
-> This method requires **Docker** to be installed and running locally, because the CDK build bundles several Lambda functions as container images (Prisma database migration, review processor, AgentCore runtime). Node.js and AWS credentials with permissions for the target account / region are also required.
-
-- Clone this repository:
-
-```
-git clone https://github.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation.git
-cd review-and-assessment-powered-by-intelligent-documentation
+```text
+.
+├── backend/                 Fastify API, Prisma schema, and workflow handlers
+├── frontend/                React web application
+├── cdk/                     AWS infrastructure definitions
+├── review-item-processor/   Python review agent
+├── assets/local/            Local MySQL Docker configuration
+├── examples/                English and Japanese sample documents
+├── docs/                    Architecture and development documentation
+├── scripts/                 Local project utilities
+├── SPRINT_PLAN.md           Delivery roadmap and task checklist
+└── SPRINT_1_REPORT.md       Local setup and verification record
 ```
 
-- Edit [parameter.ts](./cdk/lib/parameter.ts) as needed. See [Parameter Customization](#parameter-customization) for details.
-- Bootstrap the target region once before the first deployment. The exported `AWS_DEFAULT_REGION` applies to both the bootstrap and the deployment; you can also specify the region per command with `npx cdk bootstrap aws://<account-id>/<region>` instead. Run `npm ci` in `cdk/` before bootstrapping: `cdk bootstrap` loads the CDK app in `cdk/bin/rapid.ts`, so on a fresh clone it fails before reaching AWS. The app also bootstraps `us-east-1` for the CloudFront WAF stack (skipped in the S3 + API Gateway and closed-network frontend modes).
+There is intentionally no root `package.json`. The backend, frontend, and CDK
+directories are separate TypeScript packages. The review agent is a separate
+Python package managed with `uv`.
 
+## Prerequisites
+
+Install these tools before starting:
+
+- Node.js 20 or later. Node.js 22 is recommended.
+- npm
+- Docker Desktop with Docker Compose
+- Python 3.13 or later
+- `uv`
+- AWS CLI
+
+The local setup can run the database and API without an AWS deployment. Full
+sign-in, document storage, checklist processing, and AI review still require
+AWS resources and credentials.
+
+Check your local versions:
+
+```bash
+node --version
+npm --version
+docker --version
+docker compose version
+python3 --version
+uv --version
+aws --version
 ```
-cd cdk
-npm ci
-export AWS_DEFAULT_REGION="<region>"
-npx cdk bootstrap
+
+## Local setup
+
+### 1. Start MySQL
+
+From the repository root:
+
+```bash
+docker compose -f assets/local/docker-compose.yml up -d
 ```
 
-- Deploy (this builds all packages and deploys them automatically):
+The local database uses these development-only values:
 
+```text
+Host: localhost
+Port: 3306
+Database: rapid
+User: rapid_user
+Password: rapid_password
 ```
-cd cdk
-npm run deploy
-```
 
-<details><summary>Manual step-by-step deployment</summary>
+Do not reuse these credentials outside local development.
 
-Prepare the backend:
+### 2. Install and prepare the backend
 
 ```bash
 cd backend
 npm ci
 npm run prisma:generate
+npm run prisma:migrate
+```
+
+Start the backend with local authentication bypass enabled:
+
+```bash
+export RAPID_LOCAL_DEV=true
+npm run dev
+```
+
+The API will be available at `http://localhost:3000`.
+
+Confirm that it is healthy:
+
+```bash
+curl http://localhost:3000/health
+```
+
+Expected response:
+
+```json
+{ "status": "ok" }
+```
+
+`RAPID_LOCAL_DEV=true` only changes backend authentication during local
+development. It has no effect on deployed Lambda functions.
+
+### 3. Install and start the frontend
+
+Open another terminal:
+
+```bash
+cd frontend
+npm ci
+cp .env.example .env.local
+npm run dev
+```
+
+The frontend will be available at `http://localhost:5173`.
+
+The frontend does not have a local authentication bypass. To sign in, replace
+the placeholder Cognito values in `frontend/.env.local` with values from a
+deployed RAPID stack:
+
+```text
+VITE_APP_REGION=<aws-region>
+VITE_APP_USER_POOL_ID=<cognito-user-pool-id>
+VITE_APP_USER_POOL_CLIENT_ID=<cognito-client-id>
+VITE_APP_API_ENDPOINT=http://localhost:3000
+```
+
+The file is ignored by Git. Do not commit real environment values or secrets.
+
+### 4. Prepare the Python review agent
+
+```bash
+cd review-item-processor
+uv sync --extra dev
+uv run pytest
+```
+
+The review agent normally runs in Amazon Bedrock AgentCore. Local tests cover
+the parts of its behavior that do not require live AWS resources.
+
+## Verify the whole project
+
+After dependencies are installed and MySQL is running, execute this from the
+repository root:
+
+```bash
+./scripts/verify-local.sh
+```
+
+The script checks formatting, runs the available test suites, and builds each
+package. It does not reset or delete the database.
+
+The inherited frontend ESLint setup is not currently a reliable verification
+gate. The issue and its impact are documented in
+[SPRINT_1_REPORT.md](./SPRINT_1_REPORT.md). The strict TypeScript and Vite build
+still runs as part of project verification.
+
+## Useful commands
+
+### Check the database container
+
+```bash
+docker compose -f assets/local/docker-compose.yml ps
+```
+
+### Stop the local database
+
+```bash
+docker compose -f assets/local/docker-compose.yml down
+```
+
+This keeps the MySQL volume and its data.
+
+### Open Prisma Studio
+
+```bash
+cd backend
+npm run prisma:studio
+```
+
+Prisma Studio will be available at `http://localhost:5555`.
+
+### Run backend tests
+
+```bash
+cd backend
+npm test
+```
+
+### Build the frontend
+
+```bash
+cd frontend
 npm run build
 ```
 
-Then install the CDK packages and deploy:
-
-```bash
-cd ../cdk
-npm ci
-npx cdk deploy --require-approval never --all
-```
-
-</details>
-
-- You will see output like the following. Access the Web application URL displayed in `RapidStack.FrontendURL` from your browser.
-
-```sh
- ✅  RapidStack
-
-✨  deployment time: 78.57s
-
-Output:
-...
-RapidStack.FrontendURL = https://xxxxx.cloudfront.net
-```
-
-### Cleaning Up (Destroying the Stacks)
-
-To remove everything this sample created and stop incurring costs, destroy both CDK stacks. Run this from the `cdk` directory:
+### Run CDK tests
 
 ```bash
 cd cdk
-npx cdk destroy --all
+npm test -- --runInBand
 ```
 
-`--all` lets CDK delete the stacks in dependency order (it removes `RapidStack` before `RapidFrontendWafStack`, which lives in **us-east-1**).
+## AWS deployment
 
-> [!Warning]
-> This is a sample/demo configuration: the S3 buckets, the Aurora database, and — when the stack created it — the Cognito User Pool are all removed on destroy, **including all data and user accounts**. There is no retention or deletion protection. Back up anything you need first, and for real workloads consider changing these removal policies.
+A complete deployment creates two CDK stacks:
 
-A few resources are not removed automatically, such as an imported Cognito User Pool, some CloudWatch Logs log groups, and the `RapidCodeBuildDeploy` stack created by the CloudShell deployment. In VPC mode, `cdk destroy` can also fail temporarily with `DELETE_FAILED` while service-managed ENIs are released. See [Cleanup Details](./docs/en/deployment-options.md#cleanup-details) for both topics.
+- `RapidFrontendWafStack` contains the CloudFront WAF resources in `us-east-1`.
+- `RapidStack` contains the main application resources in the selected region.
 
-## Parameter Customization
+Docker must be running because the CDK build packages several Lambda functions
+and the AgentCore runtime as container images.
 
-The following parameters can be customized during CDK deployment. Edit [`cdk/lib/parameter.ts`](./cdk/lib/parameter.ts):
+Before deploying:
 
-| Parameter Group           | Parameter Name                       | Description                                                                                                                                                                | Default Value                              |
-| ------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| **WAF Configuration**     | allowedIpV4AddressRanges             | IPv4 ranges to allow in the frontend WAF                                                                                                                                   | ["0.0.0.0/1", "128.0.0.0/1"] (all allowed) |
-|                           | allowedIpV6AddressRanges             | IPv6 ranges to allow in the frontend WAF                                                                                                                                   | ["0000::/1", "8000::/1"] (all allowed)     |
-| **Cognito Settings**      | cognitoUserPoolId                    | Existing Cognito User Pool ID                                                                                                                                              | Create new                                 |
-|                           | cognitoUserPoolClientId              | Existing Cognito User Pool Client ID                                                                                                                                       | Create new                                 |
-|                           | cognitoDomainPrefix                  | Prefix for the Cognito domain                                                                                                                                              | Auto-generated                             |
-|                           | cognitoSelfSignUpEnabled             | Whether to enable self-signup for the Cognito User Pool                                                                                                                    | true (enabled)                             |
-| **Migration**             | autoMigrate                          | Whether to automatically run database migration during deployment                                                                                                          | true (auto-run)                            |
-| **MCP Features**          | mcpAdmin                             | Whether to grant admin permissions to the MCP runtime Lambda function                                                                                                      | false (disabled)                           |
-| **Citations API**         | enableCitations                      | Whether to enable the Citations API for PDF documents ([AWS announcement](https://aws.amazon.com/about-aws/whats-new/2025/06/citations-api-pdf-claude-models-amazon-bedrock/)) | true (enabled)                             |
-| **Model Selection**       | availableModels                      | List of models available for per-checklist-item model selection. Set to an empty array `[]` to disable the model selection UI                                              | Claude Opus 4.6, Claude Sonnet 4.6, Claude Haiku 4.5, Claude Sonnet 4 |
-| **Network Mode**          | s3ApiGatewayFrontend                 | Serve the SPA from S3 via a dedicated REGIONAL API Gateway (S3 proxy) instead of CloudFront, keeping standard networking. See [Closed / Private Network Deployment](#closed--private-network-deployment). | false                                      |
-|                           | closedNetwork                        | Fully private mode: isolated subnets, no NAT, VPC endpoints, PRIVATE API Gateways, Cognito PrivateLink. Implies `s3ApiGatewayFrontend`. See [Closed / Private Network Deployment](#closed--private-network-deployment). | false                                      |
-|                           | agentCoreNetworkMode                 | AgentCore Runtime network mode (only applies when `closedNetwork`). `PUBLIC` = runtime has internet (MCP/uv work); `VPC` = runtime fully isolated. Invoke path is private either way | PUBLIC                                     |
-| **Map State Concurrency** | reviewMapConcurrency                 | Map State concurrency for the Review Processor (must be configured in consultation with throttling limits)                                                                 | 1                                          |
-|                           | checklistInlineMapConcurrency        | Inline Map State concurrency for the Checklist Processor (must be configured in consultation with throttling limits)                                                       | 1                                          |
-| **Review Queue Settings** | reviewMaxConcurrency                 | Max concurrent Step Functions executions for the review queue consumer                                                                                                     | 2                                          |
-|                           | reviewQueueMaxDepth                  | Max queue depth before the API returns a global concurrency limit error                                                                                                    | 10                                         |
-|                           | reviewQueueMaxQueueCountMs           | Max wait time in ms before error handling in the review queue consumer                                                                                                     | 86,400,000 (24h)                           |
-|                           | reviewQueueLogLevel                  | Log level for the review queue consumer Lambda                                                                                                                             | WARNING                                    |
-| **Schedule Settings**     | feedbackAggregatorScheduleExpression | Feedback Aggregator execution schedule (EventBridge Scheduler expression format)                                                                                           | cron(0 2 * * ? *) (Daily at 2:00 UTC)      |
+1. Use a sandbox AWS account.
+2. Confirm Bedrock model availability in the selected region.
+3. Review service quotas and expected cost.
+4. Restrict allowed IP ranges where possible.
+5. Disable Cognito self-sign-up unless it is truly required.
+6. Review `cdk/lib/parameter.ts` and the resulting `cdk diff`.
 
-**Schedule Expression Format:**
+Basic deployment commands:
 
-- Cron format: `cron(minute hour day month day-of-week year)` - Example: `cron(0 2 * * ? *)` (Daily at 2:00 UTC)
-- Rate format: `rate(value unit)` - Example: `rate(1 day)` (Every day), `rate(12 hours)` (Every 12 hours)
-- Details: [Schedule types on EventBridge Scheduler](https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html)
+```bash
+cd cdk
+npm ci
+export AWS_DEFAULT_REGION=<region>
+npx cdk bootstrap
+npm run deploy
+```
 
-> [!Caution]
-> The default values prioritize an easy trial over production hardening:
->
-> - **WAF IP restrictions**: the defaults allow **all** IP addresses. For production, set the specific IP ranges you want to allow.
-> - **Self-signup** is enabled by default. For production use, we strongly recommend setting `cognitoSelfSignUpEnabled: false`; leaving it enabled allows anyone who reaches the URL to register an account.
-> - **autoMigrate** runs database migrations automatically on every deployment. For production environments or environments containing important data, consider setting it to `false` and controlling migrations manually.
+Do not deploy casually. The default architecture includes Aurora Serverless,
+networking, storage, workflow, AI, and authentication resources that can incur
+ongoing AWS charges.
 
-### Closed / Private Network Deployment
+See these guides before deploying:
 
-Setting `closedNetwork: true` deploys RAPID in a fully closed configuration: the VPC has only isolated subnets (no NAT / Internet Gateway), runtime AWS access goes through VPC endpoints, and both API Gateways become PRIVATE endpoints. The application is then reachable only from inside the VPC — for example from your on-premises network connected via AWS Client VPN, AWS Site-to-Site VPN, or AWS Direct Connect. If you only need to avoid CloudFront while staying publicly reachable, use `s3ApiGatewayFrontend: true` instead.
+- [Deployment options](./docs/en/deployment-options.md)
+- [Developer guide](./docs/en/developer-guide.md)
+- [Local development guide](./docs/en/local-development.md)
 
-Closed network mode comes with several constraints — deployment itself still requires internet access, authentication is limited to Cognito SRP, and toggling the mode on an existing stack replaces the VPC, among others. Be sure to read [Closed / Private Network Deployment](./docs/en/deployment-options.md#closed--private-network-deployment) before enabling it.
+## Known baseline issues
 
-### AI Model Customization
+The current code builds and its core test suites pass, but it is not yet a
+finished production system.
 
-RAPID uses Strands agents with tools such as file reading, so you must select **models that support tool use**. You can change the processing models (`documentProcessingModelId` / `imageReviewModelId`) and the per-item selection list (`availableModels`) in `parameter.ts`. For the list of tool-use capable models, notes on cross-region inference profiles, and configuration examples, see [AI Model Customization](./docs/en/deployment-options.md#ai-model-customization).
+- The frontend ESLint configuration needs to be repaired and its existing
+  findings need to be triaged.
+- Locked npm installs currently report dependency vulnerabilities in the
+  backend, frontend, and CDK packages.
+- The frontend production bundle is large and would benefit from code splitting.
+- Full local sign-in depends on a deployed Cognito User Pool.
+- AI workflows depend on deployed AWS services and cannot run entirely offline.
+- Default AWS settings must be reviewed before any production deployment.
 
-## Pricing
+These are tracked as baseline findings, not hidden as successful checks.
 
-This solution incurs infrastructure fixed costs (~$5/day, ~$150/month, mainly for the NAT Gateway and Aurora Serverless v2) plus Amazon Bedrock usage costs based on document processing volume (pay-per-use).
+## Data and security notes
 
-| Model class                                                | Processable pages per review | Cost example         |
-| ---------------------------------------------------------- | ---------------------------- | -------------------- |
-| Budget-friendly lightweight model (Claude Haiku 4.5, etc.) | ~80–85 pages                 | ~$0.28 for 80 pages  |
-| High-accuracy large-capacity model (Claude Opus 4.6, etc.) | ~430 pages                   | ~$5.75 for 400 pages |
+- Use synthetic documents while developing whenever possible.
+- Never commit credentials, tokens, account identifiers, or private documents.
+- Treat uploaded content as untrusted input.
+- Review IAM permissions, storage policies, retention settings, and network
+  exposure before handling sensitive information.
+- Keep human review in the final decision path.
+- Test cleanup and recovery procedures before relying on the application.
 
-> [!Important]
-> - **Please test with your own sample documents to determine actual costs.** Costs vary significantly with text volume, image count / size, and the number of checklist items (page counts are rough estimates only).
-> - **Agent features** (Knowledge Bases, Code Interpreter, etc.) may incur up to 10x higher costs.
-> - Detailed pricing and token usage can be viewed on the review results screen.
-> - The Amazon Bedrock Converse API has a 4.5 MB file size limit.
->
-> For the latest pricing information, please visit the [Amazon Bedrock pricing page](https://aws.amazon.com/bedrock/pricing/).
+## Roadmap
 
-## User Roles and Admin Setup
+Work is organized into the following stages:
 
-### Role Behavior (Admin / General User)
+1. Reproducible local development
+2. AWS sandbox deployment
+3. End-to-end workflow validation
+4. Product and user-experience customization
+5. Prompt, model, and evaluation quality
+6. Security, privacy, and resilience
+7. Observability and operations
+8. Pilot release and handoff
 
-- **Admin**: Can view and operate on all checklist sets and review jobs (no owner restriction).
-- **General user**: Can access only resources they own (owner-restricted).
+The detailed tasks, dependencies, and acceptance criteria are in
+[SPRINT_PLAN.md](./SPRINT_PLAN.md).
 
-| Resource  | Owner             | Action | Admin | General User |
-| --------- | ----------------- | ------ | ----- | ------------ |
-| Checklist | Self-created      | View   | O     | O            |
-| Checklist | Self-created      | Edit   | O     | O            |
-| Checklist | Self-created      | Delete | O     | O            |
-| Checklist | Created by others | View   | O     | X            |
-| Checklist | Created by others | Edit   | O     | X            |
-| Checklist | Created by others | Delete | O     | X            |
-| Review    | Self-created      | View   | O     | O            |
-| Review    | Self-created      | Edit   | O     | O            |
-| Review    | Self-created      | Delete | O     | O            |
-| Review    | Created by others | View   | O     | X            |
-| Review    | Created by others | Edit   | O     | X            |
-| Review    | Created by others | Delete | O     | X            |
+## License and attribution
 
-### Admin Initial Setup
-
-This project uses a Cognito custom attribute `rapid_role`. When the ID token contains `custom:rapid_role=admin`, the backend treats the user as an admin.
-
-1. In the Cognito User Pool, set the custom attribute `rapid_role` to `admin` for the target user.
-2. Confirm the ID token includes `custom:rapid_role=admin` after login.
-
-For local development, setting `RAPID_LOCAL_DEV=true` makes requests run as an admin user.
-
-## Contact
-
-- [Takehiro Suzuki](https://github.com/statefb)
-- [Kenta Sato](https://github.com/kenta-sato3)
-
-## Contribution
-
-See [CONTRIBUTING](./CONTRIBUTING.md) for more information.
-
-## License
-
-This project is distributed under the license described in [LICENSE](./LICENSE).
+This project is based on an AWS Samples repository and retains its original
+license. See [LICENSE](./LICENSE) for the license terms and
+[CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidance.

@@ -132,6 +132,25 @@ Prisma Studio starts at `http://localhost:5555`.
 
 ## Running Tests
 
+To run formatting checks, tests, and builds for every package from the
+repository root:
+
+```bash
+./scripts/verify-local.sh
+```
+
+This command expects dependencies to be installed and requires Node.js 20 or
+later plus `uv`. Backend integration tests also require the local MySQL
+container to be running. It never resets or deletes the local database.
+
+The verifier currently omits the frontend lint command because the inherited
+flat ESLint configuration imports an undeclared `typescript-eslint` package;
+the legacy configuration also points at the solution-style `tsconfig.json`,
+which does not directly include source files. This upstream baseline issue must
+be resolved before frontend lint can become a required verification gate.
+
+To verify packages individually, use the commands below.
+
 Backend (Vitest):
 
 ```bash
@@ -190,6 +209,31 @@ uv add --dev package-name
 ```
 
 ## Troubleshooting
+
+**Wrong Node.js version**
+
+Run `node --version`. The backend requires Node.js 20 or later, and Node.js 22
+is recommended. If multiple Node.js installations exist, ensure the supported
+version appears first in `PATH` before installing dependencies or running the
+verification script.
+
+**Docker is installed but unavailable**
+
+Start Docker Desktop, wait for its engine to become ready, and run
+`docker info`. A working Docker CLI alone is not enough; the Docker daemon must
+also be running.
+
+**Port conflicts**
+
+The local defaults use ports `3306` (MySQL), `3000` (backend), `5173`
+(frontend), and `5555` (Prisma Studio). Stop the conflicting process or update
+both the service configuration and its client environment variables.
+
+**Apple Silicon**
+
+The provided MySQL 8 image and application packages support Apple Silicon.
+Use an ARM64 Node.js installation where possible; Docker may take longer during
+the first start while it downloads the database image.
 
 **Database connection errors**
 
