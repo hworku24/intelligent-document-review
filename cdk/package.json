@@ -1,6 +1,7 @@
 {
-  "name": "cdk_init",
+  "name": "vera-infrastructure",
   "version": "0.1.0",
+  "private": true,
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
