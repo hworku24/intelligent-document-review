@@ -1,5 +1,5 @@
 """
-Wrapper module to adapt the RAPID review agent to Strands Evals SDK format.
+Wrapper module to adapt the VERA review agent to Strands Evals SDK format.
 
 This module provides:
 - ReviewAgentInput/Output: Type-safe input/output models

@@ -213,33 +213,33 @@ export function resolveParameters(
 }
 
 /**
- * コマンドラインコンテキストからRapid関連のパラメータを抽出する関数
+ * コマンドラインコンテキストからVera関連のパラメータを抽出する関数
  */
 export function extractContextParameters(app: any): Record<string, any> {
   const params: Record<string, any> = {};
 
-  // 'rapid'オブジェクト全体を取得
-  const rapidParam = app.node.tryGetContext("rapid");
+  // 'vera'オブジェクト全体を取得
+  const veraParam = app.node.tryGetContext("vera");
 
-  // rapidParamがJSON文字列の場合はパース
-  let rapidObject = rapidParam;
-  if (typeof rapidParam === "string") {
+  // veraParamがJSON文字列の場合はパース
+  let veraObject = veraParam;
+  if (typeof veraParam === "string") {
     try {
-      rapidObject = JSON.parse(rapidParam);
+      veraObject = JSON.parse(veraParam);
     } catch (e) {
       // 文字列のままにしておく
-      rapidObject = rapidParam;
+      veraObject = veraParam;
     }
   }
 
-  // 'rapid'オブジェクトがある場合はそれを使用
-  if (rapidObject && typeof rapidObject === "object") {
-    Object.assign(params, rapidObject);
+  // 'vera'オブジェクトがある場合はそれを使用
+  if (veraObject && typeof veraObject === "object") {
+    Object.assign(params, veraObject);
   }
 
   // WAF IPアドレス制限パラメータの取得
   const allowedIpV4Ranges = app.node.tryGetContext(
-    "rapid.allowedIpV4AddressRanges",
+    "vera.allowedIpV4AddressRanges",
   );
   if (allowedIpV4Ranges !== undefined) {
     params.allowedIpV4AddressRanges = Array.isArray(allowedIpV4Ranges)
@@ -248,7 +248,7 @@ export function extractContextParameters(app: any): Record<string, any> {
   }
 
   const allowedIpV6Ranges = app.node.tryGetContext(
-    "rapid.allowedIpV6AddressRanges",
+    "vera.allowedIpV6AddressRanges",
   );
   if (allowedIpV6Ranges !== undefined) {
     params.allowedIpV6AddressRanges = Array.isArray(allowedIpV6Ranges)
@@ -257,20 +257,20 @@ export function extractContextParameters(app: any): Record<string, any> {
   }
 
   // Cognito関連パラメータの取得
-  const cognitoUserPoolId = app.node.tryGetContext("rapid.cognitoUserPoolId");
+  const cognitoUserPoolId = app.node.tryGetContext("vera.cognitoUserPoolId");
   if (cognitoUserPoolId !== undefined) {
     params.cognitoUserPoolId = cognitoUserPoolId;
   }
 
   const cognitoUserPoolClientId = app.node.tryGetContext(
-    "rapid.cognitoUserPoolClientId",
+    "vera.cognitoUserPoolClientId",
   );
   if (cognitoUserPoolClientId !== undefined) {
     params.cognitoUserPoolClientId = cognitoUserPoolClientId;
   }
 
   const cognitoDomainPrefix = app.node.tryGetContext(
-    "rapid.cognitoDomainPrefix",
+    "vera.cognitoDomainPrefix",
   );
   if (cognitoDomainPrefix !== undefined) {
     params.cognitoDomainPrefix = cognitoDomainPrefix;
@@ -278,7 +278,7 @@ export function extractContextParameters(app: any): Record<string, any> {
 
   // セルフサインアップ有効/無効設定の取得
   const cognitoSelfSignUpEnabled = app.node.tryGetContext(
-    "rapid.cognitoSelfSignUpEnabled",
+    "vera.cognitoSelfSignUpEnabled",
   );
   if (cognitoSelfSignUpEnabled !== undefined) {
     params.cognitoSelfSignUpEnabled =
@@ -286,21 +286,21 @@ export function extractContextParameters(app: any): Record<string, any> {
   }
 
   // Prismaマイグレーション設定の取得
-  const autoMigrate = app.node.tryGetContext("rapid.autoMigrate");
+  const autoMigrate = app.node.tryGetContext("vera.autoMigrate");
   if (autoMigrate !== undefined) {
     params.autoMigrate = autoMigrate === "true" || autoMigrate === true;
   }
 
   // Map State並行処理設定の取得
   const reviewMapConcurrency = app.node.tryGetContext(
-    "rapid.reviewMapConcurrency",
+    "vera.reviewMapConcurrency",
   );
   if (reviewMapConcurrency !== undefined) {
     params.reviewMapConcurrency = Number(reviewMapConcurrency);
   }
 
   const checklistInlineMapConcurrency = app.node.tryGetContext(
-    "rapid.checklistInlineMapConcurrency",
+    "vera.checklistInlineMapConcurrency",
   );
   if (checklistInlineMapConcurrency !== undefined) {
     params.checklistInlineMapConcurrency = Number(
@@ -309,55 +309,55 @@ export function extractContextParameters(app: any): Record<string, any> {
   }
 
   const reviewMaxConcurrency = app.node.tryGetContext(
-    "rapid.reviewMaxConcurrency",
+    "vera.reviewMaxConcurrency",
   );
   if (reviewMaxConcurrency !== undefined) {
     params.reviewMaxConcurrency = Number(reviewMaxConcurrency);
   }
 
   const reviewQueueMaxDepth = app.node.tryGetContext(
-    "rapid.reviewQueueMaxDepth",
+    "vera.reviewQueueMaxDepth",
   );
   if (reviewQueueMaxDepth !== undefined) {
     params.reviewQueueMaxDepth = Number(reviewQueueMaxDepth);
   }
 
   const reviewQueueMaxQueueCountMs = app.node.tryGetContext(
-    "rapid.reviewQueueMaxQueueCountMs",
+    "vera.reviewQueueMaxQueueCountMs",
   );
   if (reviewQueueMaxQueueCountMs !== undefined) {
     params.reviewQueueMaxQueueCountMs = Number(reviewQueueMaxQueueCountMs);
   }
 
   const reviewQueueLogLevel = app.node.tryGetContext(
-    "rapid.reviewQueueLogLevel",
+    "vera.reviewQueueLogLevel",
   );
   if (reviewQueueLogLevel !== undefined) {
     params.reviewQueueLogLevel = reviewQueueLogLevel;
   }
 
   // Bedrock設定
-  const bedrockRegion = app.node.tryGetContext("rapid.bedrockRegion");
+  const bedrockRegion = app.node.tryGetContext("vera.bedrockRegion");
   if (bedrockRegion !== undefined) {
     params.bedrockRegion = bedrockRegion;
   }
 
   // ネットワークモード設定
   const s3ApiGatewayFrontend = app.node.tryGetContext(
-    "rapid.s3ApiGatewayFrontend",
+    "vera.s3ApiGatewayFrontend",
   );
   if (s3ApiGatewayFrontend !== undefined) {
     params.s3ApiGatewayFrontend =
       s3ApiGatewayFrontend === "true" || s3ApiGatewayFrontend === true;
   }
 
-  const closedNetwork = app.node.tryGetContext("rapid.closedNetwork");
+  const closedNetwork = app.node.tryGetContext("vera.closedNetwork");
   if (closedNetwork !== undefined) {
     params.closedNetwork = closedNetwork === "true" || closedNetwork === true;
   }
 
   const agentCoreNetworkMode = app.node.tryGetContext(
-    "rapid.agentCoreNetworkMode",
+    "vera.agentCoreNetworkMode",
   );
   if (agentCoreNetworkMode !== undefined) {
     params.agentCoreNetworkMode = agentCoreNetworkMode;
@@ -365,7 +365,7 @@ export function extractContextParameters(app: any): Record<string, any> {
 
   // Feedback Aggregator スケジュール設定の取得
   const feedbackAggregatorScheduleExpression = app.node.tryGetContext(
-    "rapid.feedbackAggregatorScheduleExpression",
+    "vera.feedbackAggregatorScheduleExpression",
   );
   if (feedbackAggregatorScheduleExpression !== undefined) {
     params.feedbackAggregatorScheduleExpression =

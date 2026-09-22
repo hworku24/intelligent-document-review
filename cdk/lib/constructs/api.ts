@@ -1,5 +1,5 @@
 /**
- * RAPID API 構成
+ * VERA API 構成
  */
 import * as cdk from "aws-cdk-lib";
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
@@ -44,7 +44,7 @@ export interface ApiProps {
 }
 
 /**
- * RAPID API Construct
+ * VERA API Construct
  */
 export class Api extends Construct {
   public readonly apiLambda: lambda.DockerImageFunction;
@@ -204,10 +204,10 @@ export class Api extends Construct {
           ? { types: [apigateway.EndpointType.REGIONAL] }
           : { types: [apigateway.EndpointType.EDGE] };
 
-    this.api = new apigateway.RestApi(this, "RapidApi", {
-      restApiName: `${stackId}-RAPID-API`,
+    this.api = new apigateway.RestApi(this, "VeraApi", {
+      restApiName: `${stackId}-VERA-API`,
       description:
-        "RAPID (Review & Assessment Powered by Intelligent Documentation) API",
+        "VERA (Verification and Evidence Review Assistant) API",
       endpointConfiguration,
       ...(apiPolicy ? { policy: apiPolicy } : {}),
       deployOptions: {

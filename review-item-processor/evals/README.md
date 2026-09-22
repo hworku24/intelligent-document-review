@@ -1,4 +1,4 @@
-# RAPID Review Agent Evaluation
+# VERA Review Agent Evaluation
 
 English | [日本語](./ja/README.md)
 

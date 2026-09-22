@@ -1,6 +1,6 @@
 # デプロイオプション
 
-このドキュメントでは、RAPID のデプロイと設定のオプションを詳しく説明します。基本的なデプロイ手順とパラメータの一覧表は [README](./README_ja.md#デプロイ方法) をご覧ください。
+このドキュメントでは、VERA のデプロイと設定のオプションを詳しく説明します。基本的なデプロイ手順とパラメータの一覧表は [README](./README_ja.md#デプロイ方法) をご覧ください。
 
 ## 目次
 
@@ -14,7 +14,7 @@
 CloudShell 用のデプロイスクリプト（`bin.sh`）では、以下のオプションを利用できます。値はオプション名のあとにスペース区切りで指定してください。
 
 ```bash
-wget -O - https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh | bash -s -- --ipv4-ranges '["192.168.0.0/16"]' --cognito-self-signup false
+wget -O - https://raw.githubusercontent.com/hworku24/intelligent-document-review/main/bin.sh | bash -s -- --ipv4-ranges '["192.168.0.0/16"]' --cognito-self-signup false
 ```
 
 ほとんどのオプションは、[パラメータカスタマイズ](./README_ja.md#パラメータカスタマイズ)で説明する CDK パラメータにそのまま対応しています。各パラメータの意味は README の一覧表をご覧ください。
@@ -60,7 +60,7 @@ export const parameters = {
 デプロイ時に CLI context で指定する場合:
 
 ```bash
-npx cdk deploy --all -c rapid.closedNetwork=true
+npx cdk deploy --all -c vera.closedNetwork=true
 ```
 
 CloudShell スクリプトのオプションで指定する場合:
@@ -152,10 +152,10 @@ export const parameters = {
 
 - **インポートした Amazon Cognito User Pool**（`cognitoUserPoolId` を指定してデプロイした場合のみ）: スタックの管理対象ではなく参照しているだけのため、destroy してもプールとそのユーザーは残ります（意図した挙動です）。
 - 一部の **CloudWatch Logs** ロググループ（Step Functions、VPC フローログ、審査キューコンシューマ）や、CDK ブートストラップの **ECR** リポジトリにプッシュされたコンテナイメージが残る場合があります。
-- **CloudShell** 経由でデプロイした場合、補助スタック `RapidCodeBuildDeploy`（[`deploy.yml`](../../deploy.yml) 由来）は CDK アプリとは別物で、`cdk destroy` では削除されません。広範な `AdministratorAccess` を持つ CodeBuild ロールを残さないよう、CloudFormation コンソール／CLI から削除してください。
+- **CloudShell** 経由でデプロイした場合、補助スタック `VeraCodeBuildDeploy`（[`deploy.yml`](../../deploy.yml) 由来）は CDK アプリとは別物で、`cdk destroy` では削除されません。広範な `AdministratorAccess` を持つ CodeBuild ロールを残さないよう、CloudFormation コンソール／CLI から削除してください。
 
   ```bash
-  aws cloudformation delete-stack --stack-name RapidCodeBuildDeploy
+  aws cloudformation delete-stack --stack-name VeraCodeBuildDeploy
   ```
 
 ### `cdk destroy` が VPC のサブネット／セキュリティグループで `DELETE_FAILED` になる場合（VPC モード時のみ）
@@ -163,7 +163,7 @@ export const parameters = {
 > [!Tip]
 > この問題は `agentCoreNetworkMode` を `"VPC"` に設定した場合にのみ発生します。デフォルト設定（`"PUBLIC"`）では VPC 内に ENI を作成しないため、`cdk destroy --all` は即座に完了します。
 
-VPC モードで実行している場合、審査エージェントは Amazon Bedrock AgentCore Runtime を使い、AgentCore が `RapidStack` のプライベートサブネット内にサービス管理の Elastic Network Interface（ENI、インターフェースタイプ `agentic_ai`、タグ `AmazonBedrockAgentCoreManaged=true`）を作成します。スタックを destroy すると、CloudFormation は AgentCore Runtime の削除には成功しますが、**これらの ENI がすぐには解放されない**ため、サブネットと審査プロセッサ用セキュリティグループがまだ削除できず、`The subnet '...' has dependencies and cannot be deleted`（サブネットに依存関係があり削除できない）や `resource sg-... has a dependent object`（SG に依存オブジェクトがある）といったメッセージとともにスタックが `DELETE_FAILED` で終わります。
+VPC モードで実行している場合、審査エージェントは Amazon Bedrock AgentCore Runtime を使い、AgentCore が `VeraStack` のプライベートサブネット内にサービス管理の Elastic Network Interface（ENI、インターフェースタイプ `agentic_ai`、タグ `AmazonBedrockAgentCoreManaged=true`）を作成します。スタックを destroy すると、CloudFormation は AgentCore Runtime の削除には成功しますが、**これらの ENI がすぐには解放されない**ため、サブネットと審査プロセッサ用セキュリティグループがまだ削除できず、`The subnet '...' has dependencies and cannot be deleted`（サブネットに依存関係があり削除できない）や `resource sg-... has a dependent object`（SG に依存オブジェクトがある）といったメッセージとともにスタックが `DELETE_FAILED` で終わります。
 
 これは不具合ではなく、想定どおりの挙動です。AWS のドキュメントには次のように記載されています。
 

@@ -97,9 +97,9 @@ export class FrontendApi extends Construct {
     }
 
     this.api = new apigateway.RestApi(this, "FrontendRestApi", {
-      restApiName: `${stackId}-RAPID-Frontend`,
+      restApiName: `${stackId}-VERA-Frontend`,
       description:
-        "RAPID frontend delivery API (S3 proxy for the SPA static assets)",
+        "VERA frontend delivery API (S3 proxy for the SPA static assets)",
       binaryMediaTypes: ["*/*"], // pass assets through as binary
       endpointConfiguration:
         endpointMode === "PRIVATE"

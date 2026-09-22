@@ -1,6 +1,6 @@
 ---
 name: deploy-cdk-stack
-description: Deploy RAPID application AWS infrastructure using CDK, including stack deployment, database migrations, and post-deployment verification. Use when explicitly asked to deploy, when running CDK bootstrap for first-time setup, or when deploying after code or infrastructure changes. Only execute when user says "please deploy".
+description: Deploy VERA application AWS infrastructure using CDK, including stack deployment, database migrations, and post-deployment verification. Use when explicitly asked to deploy, when running CDK bootstrap for first-time setup, or when deploying after code or infrastructure changes. Only execute when user says "please deploy".
 ---
 
 # Deploy CDK Stack
@@ -60,8 +60,8 @@ export const parameters = {
 ### Command Line Parameters
 
 ```bash
-npx cdk deploy -c rapid.bedrockRegion="ap-northeast-1"
-npx cdk deploy -c rapid='{"bedrockRegion":"us-west-2","documentProcessingModelId":"us.anthropic.claude-sonnet-4-6"}'
+npx cdk deploy -c vera.bedrockRegion="ap-northeast-1"
+npx cdk deploy -c vera='{"bedrockRegion":"us-west-2","documentProcessingModelId":"us.anthropic.claude-sonnet-4-6"}'
 ```
 
 Precedence: Command line > parameter.ts > parameter-schema.ts defaults
@@ -75,8 +75,8 @@ Precedence: Command line > parameter.ts > parameter-schema.ts defaults
 | Schema change | Deploy + run migration command (see below) |
 | Full stack | Build all + `npx cdk deploy --require-approval never --all` |
 
-> The default (CloudFront) mode synthesizes **two** stacks (`RapidStack` + the
-> us-east-1 `RapidFrontendWafStack`), so a bare `npx cdk deploy` is rejected by
+> The default (CloudFront) mode synthesizes **two** stacks (`VeraStack` + the
+> us-east-1 `VeraFrontendWafStack`), so a bare `npx cdk deploy` is rejected by
 > the CDK CLI ("specify which stacks to use"). Always pass `--all` (dependency
 > order is resolved by the CLI).
 
@@ -84,10 +84,10 @@ Precedence: Command line > parameter.ts > parameter-schema.ts defaults
 
 ```bash
 # Get URLs
-aws cloudformation describe-stacks --stack-name RapidStack \
+aws cloudformation describe-stacks --stack-name VeraStack \
   --query "Stacks[0].Outputs[?OutputKey=='FrontendURL'].OutputValue" --output text
 
-aws cloudformation describe-stacks --stack-name RapidStack \
+aws cloudformation describe-stacks --stack-name VeraStack \
   --query "Stacks[0].Outputs[?OutputKey=='ApiEndpoint'].OutputValue" --output text
 ```
 
@@ -97,7 +97,7 @@ aws cloudformation describe-stacks --stack-name RapidStack \
 
 ```bash
 MIGRATION_COMMAND=$(aws cloudformation describe-stacks \
-  --stack-name RapidStack \
+  --stack-name VeraStack \
   --query "Stacks[0].Outputs[?OutputKey=='DeployMigrationCommand'].OutputValue" \
   --output text)
 eval $MIGRATION_COMMAND

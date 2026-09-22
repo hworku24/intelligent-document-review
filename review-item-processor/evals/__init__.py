@@ -1,5 +1,5 @@
 """
-Evaluation framework for RAPID review agent.
+Evaluation framework for VERA review agent.
 
 Uses strands-agents-evals SDK with hybrid approach:
 - Strands handles experiment orchestration

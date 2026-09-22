@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Review & Assessment Powered by Intelligent Documentation",
+    "appName": "Verification and Evidence Review Assistant",
     "loading": "Loading...",
     "error": "An error occurred",
     "retry": "Retry",
@@ -62,7 +62,7 @@
   "auth": {
     "signIn": "Sign In",
     "signUp": "Create Account",
-    "appDescription": "Review & Assessment Powered by Intelligent Documentation",
+    "appDescription": "Verification and Evidence Review Assistant",
     "username": "Username",
     "password": "Password",
     "confirmPassword": "Confirm Password",
@@ -358,7 +358,7 @@
     "title": "MCP Server Settings",
     "description": "Manage Model Context Protocol (MCP) server settings",
     "infoTitle": "Notice",
-    "infoMessage": "MCP servers extend AI assistant functionality using the Model Context Protocol. They enable AI assistants to connect with specific services and APIs. For security, available commands and arguments are restricted. Currently, only \"uvx\" and \"npx\" commands are allowed, and only MCP servers published on <a href='https://github.com/awslabs/mcp' target='_blank' rel='noopener noreferrer' style='color: #0073bb; text-decoration: underline;'>AWS MCP Servers</a> are supported. Using MCP requires deployment option adjustments. Please refer to the <a href='https://github.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/blob/main/docs/en/mcp-features.md' target='_blank' rel='noopener noreferrer' style='color: #0073bb; text-decoration: underline;'>documentation</a> for details.",
+    "infoMessage": "MCP servers extend AI assistant functionality using the Model Context Protocol. They enable AI assistants to connect with specific services and APIs. For security, available commands and arguments are restricted. Currently, only \"uvx\" and \"npx\" commands are allowed, and only MCP servers published on <a href='https://github.com/awslabs/mcp' target='_blank' rel='noopener noreferrer' style='color: #0073bb; text-decoration: underline;'>AWS MCP Servers</a> are supported. Using MCP requires deployment option adjustments. Please refer to the <a href='https://github.com/hworku24/intelligent-document-review/blob/main/docs/en/mcp-features.md' target='_blank' rel='noopener noreferrer' style='color: #0073bb; text-decoration: underline;'>documentation</a> for details.",
     "settingsLabel": "Settings (JSON)",
     "insertExample": "Insert Example",
     "saveButton": "Save",
@@ -466,10 +466,10 @@
     "showMore": "+{{count}} more",
     "showLess": "Show less",
     "onboarding": {
-      "title": "Welcome to RAPID 🚀",
+      "title": "Welcome to VERA 🚀",
       "primaryMessage": "Start immediately with open-source samples showing concrete industrial use cases",
       "industriesLabel": "Available across various industry categories:",
-      "valueProposition": "Skip the document preparation step. Download and try real examples right now to experience the full power of RAPID.",
+      "valueProposition": "Skip the document preparation step. Download and try real examples right now to experience the full power of VERA.",
       "exploreExamples": "Explore Examples",
       "dontShowAgain": "Don't show this again"
     }

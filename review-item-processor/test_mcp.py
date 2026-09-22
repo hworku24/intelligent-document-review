@@ -13,7 +13,7 @@ def get_config():
     """Get AWS configuration; 'is_real' is False when falling back to a placeholder bucket."""
     try:
         cfn = boto3.client("cloudformation")
-        response = cfn.describe_stacks(StackName="RapidStack")
+        response = cfn.describe_stacks(StackName="VeraStack")
         outputs = {
             o["OutputKey"]: o["OutputValue"] for o in response["Stacks"][0]["Outputs"]
         }
@@ -43,7 +43,7 @@ def test_mcp_with_uvx():
     # Requires a real S3 bucket to upload the fixture PDF to.
     if not config["is_real"]:
         pytest.skip(
-            "No S3 bucket configured (set DOCUMENT_BUCKET or deploy RapidStack); "
+            "No S3 bucket configured (set DOCUMENT_BUCKET or deploy VeraStack); "
             "skipping MCP integration test that uploads to S3"
         )
 

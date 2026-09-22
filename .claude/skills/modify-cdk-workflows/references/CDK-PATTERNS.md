@@ -1,6 +1,6 @@
 # CDK Step Functions Patterns
 
-Reference for common CDK Step Functions patterns used in RAPID workflows.
+Reference for common CDK Step Functions patterns used in VERA workflows.
 
 ## Data Flow with JsonPath
 

@@ -1,4 +1,4 @@
-# Review & Assessment Powered by Intelligent Documentation (RAPID)
+# Verification and Evidence Review Assistant (VERA)
 
 | ドキュメント                                                        | 言語                                                                                       |
 | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
@@ -20,12 +20,12 @@
 
 ## 仕組み
 
-RAPID では、書類審査を 2 つのフェーズに分けて行います。
+VERA では、書類審査を 2 つのフェーズに分けて行います。
 
 1. **チェックリストを作成** — 規程・ガイドライン・仕様書など、書類のどの箇所をどうチェックするかを示した書類（PDF）をアップロードすると、AI が審査項目をチェックリストとして抽出します。
 2. **審査を実行** — 審査対象の書類（PDF・画像）をアップロードして突合させるチェックリストを選ぶと、AI が各項目を**合格／不合格で判定し**、信頼度スコア・AI の判断理由・参照した書類を提示します。
 
-RAPID は AWS のサーバーレスサービス（Amazon CloudFront、API Gateway + Lambda、Step Functions、Aurora Serverless v2、Amazon Bedrock / AgentCore）で構成されています。アーキテクチャ図は[開発者ガイド](./developer-guide.md#アーキテクチャ)をご覧ください。
+VERA は AWS のサーバーレスサービス（Amazon CloudFront、API Gateway + Lambda、Step Functions、Aurora Serverless v2、Amazon Bedrock / AgentCore）で構成されています。アーキテクチャ図は[開発者ガイド](./developer-guide.md#アーキテクチャ)をご覧ください。
 
 ## 主な機能
 
@@ -34,8 +34,8 @@ RAPID は AWS のサーバーレスサービス（Amazon CloudFront、API Gatewa
 - **チェック項目ごとのモデル選択** — チェック項目ごとに任意の生成 AI モデルを割り当てられるため、難しい項目にだけ高精度なモデルを使うといった使い分けができます。
 - **エージェントツール** — 外部ツールの知識が必要なチェック項目には、**Amazon Bedrock Knowledge Bases**（RAG）、**AgentCore Code Interpreter**（計算・検証のためのコード実行）、**MCP（Model Context Protocol）** サーバをオプションで付与できます。
 - **プロンプトのカスタマイズ** — チェックリスト抽出に使うシステムプロンプトを、専用の「プロンプト管理」画面から確認・編集できます。
-- **業界別サンプルギャラリー** — 不動産・IT・製造・医療・コーポレートガバナンスなど、業界別のサンプルシナリオを内蔵しており、RAPID による書類審査をすぐに試せます。
-- **閉域網デプロイ** — RAPID をインターネットに公開せずに運用できます。**AWS Site-to-Site VPN** や **AWS Direct Connect** と組み合わせることで、オンプレミスのネットワークから完全にプライベートな通信で利用できます。詳細は[閉域網デプロイ](#閉域網デプロイ)をご覧ください。
+- **業界別サンプルギャラリー** — 不動産・IT・製造・医療・コーポレートガバナンスなど、業界別のサンプルシナリオを内蔵しており、VERA による書類審査をすぐに試せます。
+- **閉域網デプロイ** — VERA をインターネットに公開せずに運用できます。**AWS Site-to-Site VPN** や **AWS Direct Connect** と組み合わせることで、オンプレミスのネットワークから完全にプライベートな通信で利用できます。詳細は[閉域網デプロイ](#閉域網デプロイ)をご覧ください。
 - **同時実行数の制御** — 同時実行数を制御し、Amazon Bedrock のクォータ内に収まるように審査を実行します。
 
 <details>
@@ -76,7 +76,7 @@ RAPID は AWS のサーバーレスサービス（Amazon CloudFront、API Gatewa
 3. **デプロイスクリプトの実行**
 
    ```bash
-   wget -O - https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh | bash
+   wget -O - https://raw.githubusercontent.com/hworku24/intelligent-document-review/main/bin.sh | bash
    ```
 
    このコマンドで、リポジトリのクローンからデプロイまでが自動的に実行されます。デプロイが完了するとフロントエンド URL と API の URL が表示されるので、フロントエンド URL にブラウザからアクセスして利用を開始できます。
@@ -84,7 +84,7 @@ RAPID は AWS のサーバーレスサービス（Amazon CloudFront、API Gatewa
 4. **カスタムオプションの指定（任意）**
 
    ```bash
-   wget -O - https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh | bash -s -- --ipv4-ranges '["192.168.0.0/16"]'
+   wget -O - https://raw.githubusercontent.com/hworku24/intelligent-document-review/main/bin.sh | bash -s -- --ipv4-ranges '["192.168.0.0/16"]'
    ```
 
    `--ipv4-ranges` や `--closed-network` などのオプションは、[パラメータカスタマイズ](#パラメータカスタマイズ)で説明する CDK パラメータに対応しています。オプションの一覧は [CloudShell デプロイのオプション](./deployment-options.md#cloudshell-デプロイのオプション)をご覧ください。
@@ -100,12 +100,12 @@ RAPID は AWS のサーバーレスサービス（Amazon CloudFront、API Gatewa
 - このリポジトリをクローンします。
 
 ```
-git clone https://github.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation.git
-cd review-and-assessment-powered-by-intelligent-documentation
+git clone https://github.com/hworku24/intelligent-document-review.git
+cd intelligent-document-review
 ```
 
 - 必要に応じて [parameter.ts](../../cdk/lib/parameter.ts) を編集します。詳細は[パラメータカスタマイズ](#パラメータカスタマイズ)をご覧ください。
-- 初回のデプロイ前に、デプロイ先のリージョンに対して一度だけブートストラップを実行します。export した `AWS_DEFAULT_REGION` は bootstrap と deploy の両方に適用されます。`npx cdk bootstrap aws://<account-id>/<region>` の形式で、コマンドごとにリージョンを指定することもできます。ブートストラップの前に `cdk/` で `npm ci` を実行してください。`cdk bootstrap` は `cdk/bin/rapid.ts` の CDK アプリを読み込むため、クローン直後（依存関係が未インストール）では AWS へ到達する前に失敗します。CloudFront 用の WAF スタックのために `us-east-1` も同時にブートストラップされます（S3 + API Gateway 構成・閉域構成では当該スタックを作らないため対象外です）。
+- 初回のデプロイ前に、デプロイ先のリージョンに対して一度だけブートストラップを実行します。export した `AWS_DEFAULT_REGION` は bootstrap と deploy の両方に適用されます。`npx cdk bootstrap aws://<account-id>/<region>` の形式で、コマンドごとにリージョンを指定することもできます。ブートストラップの前に `cdk/` で `npm ci` を実行してください。`cdk bootstrap` は `cdk/bin/vera.ts` の CDK アプリを読み込むため、クローン直後（依存関係が未インストール）では AWS へ到達する前に失敗します。CloudFront 用の WAF スタックのために `us-east-1` も同時にブートストラップされます（S3 + API Gateway 構成・閉域構成では当該スタックを作らないため対象外です）。
 
 ```
 cd cdk
@@ -142,16 +142,16 @@ npx cdk deploy --require-approval never --all
 
 </details>
 
-- 以下のような出力が表示されます。Web アプリの URL は `RapidStack.FrontendURL` に出力されるので、ブラウザからアクセスしてください。
+- 以下のような出力が表示されます。Web アプリの URL は `VeraStack.FrontendURL` に出力されるので、ブラウザからアクセスしてください。
 
 ```sh
- ✅  RapidStack
+ ✅  VeraStack
 
 ✨  deployment time: 78.57s
 
 Output:
 ...
-RapidStack.FrontendURL = https://xxxxx.cloudfront.net
+VeraStack.FrontendURL = https://xxxxx.cloudfront.net
 ```
 
 ### 後片付け（スタックの削除）
@@ -163,12 +163,12 @@ cd cdk
 npx cdk destroy --all
 ```
 
-`--all` を付けると、CDK が依存関係の順序でスタックを削除します（`RapidStack` を先に、**us-east-1** にある `RapidFrontendWafStack` を後に削除します）。
+`--all` を付けると、CDK が依存関係の順序でスタックを削除します（`VeraStack` を先に、**us-east-1** にある `VeraFrontendWafStack` を後に削除します）。
 
 > [!Warning]
 > 本サンプルは Demo/PoC 向けの構成です。S3 バケット、Aurora データベース、および（スタックが新規作成した場合の）Cognito User Pool は、**保存データやユーザーアカウントも含めて** destroy で削除されます。保持設定や削除保護は行っていません。必要なものは事前にバックアップし、実運用では削除ポリシーの変更を検討してください。
 
-インポートした Cognito User Pool、一部の CloudWatch Logs ロググループ、CloudShell デプロイが作成する `RapidCodeBuildDeploy` スタックなど、いくつかのリソースは自動では削除されません。また VPC モードでは、サービス管理の ENI が解放されるまで `cdk destroy` が一時的に `DELETE_FAILED` になることがあります。いずれも[後片付けの詳細](./deployment-options.md#後片付けの詳細)をご覧ください。
+インポートした Cognito User Pool、一部の CloudWatch Logs ロググループ、CloudShell デプロイが作成する `VeraCodeBuildDeploy` スタックなど、いくつかのリソースは自動では削除されません。また VPC モードでは、サービス管理の ENI が解放されるまで `cdk destroy` が一時的に `DELETE_FAILED` になることがあります。いずれも[後片付けの詳細](./deployment-options.md#後片付けの詳細)をご覧ください。
 
 ## パラメータカスタマイズ
 
@@ -212,13 +212,13 @@ CDK デプロイ時に以下のパラメータをカスタマイズできます�
 
 ### 閉域網デプロイ
 
-`closedNetwork: true` を設定すると、RAPID を完全閉域構成でデプロイします。VPC は isolated サブネットのみ（NAT／インターネットゲートウェイなし）で構成され、実行時の AWS アクセスは VPC エンドポイント経由になり、2 つの API Gateway はいずれも PRIVATE エンドポイントになります。アプリケーションへは VPC 内部からのみアクセスできます。たとえば AWS Client VPN・AWS Site-to-Site VPN・AWS Direct Connect で VPC に接続したオンプレミスのネットワークから利用します。CloudFront を避けつつ公開は維持したい場合は、代わりに `s3ApiGatewayFrontend: true` を使用してください。
+`closedNetwork: true` を設定すると、VERA を完全閉域構成でデプロイします。VPC は isolated サブネットのみ（NAT／インターネットゲートウェイなし）で構成され、実行時の AWS アクセスは VPC エンドポイント経由になり、2 つの API Gateway はいずれも PRIVATE エンドポイントになります。アプリケーションへは VPC 内部からのみアクセスできます。たとえば AWS Client VPN・AWS Site-to-Site VPN・AWS Direct Connect で VPC に接続したオンプレミスのネットワークから利用します。CloudFront を避けつつ公開は維持したい場合は、代わりに `s3ApiGatewayFrontend: true` を使用してください。
 
 閉域モードには、デプロイの実行時にはインターネットアクセスが必要であること、認証が Cognito の SRP 方式に限定されること、既存スタックでのモード切り替えは VPC の置換を伴うことなど、いくつかの制約があります。有効化する前に必ず[閉域網デプロイの詳細](./deployment-options.md#閉域網デプロイ)をご確認ください。
 
 ### AI モデルのカスタマイズ
 
-RAPID では Strands エージェントがファイル読み込みなどのツールを使用するため、**ツール使用に対応したモデル**を選択する必要があります。処理に使うモデル（`documentProcessingModelId` / `imageReviewModelId`）と項目ごとの選択リスト（`availableModels`）は `parameter.ts` で変更できます。ツール使用に対応したモデルの一覧、クロスリージョン推論プロファイルに関する注意、設定例は、[AI モデルのカスタマイズ](./deployment-options.md#ai-モデルのカスタマイズ)をご覧ください。
+VERA では Strands エージェントがファイル読み込みなどのツールを使用するため、**ツール使用に対応したモデル**を選択する必要があります。処理に使うモデル（`documentProcessingModelId` / `imageReviewModelId`）と項目ごとの選択リスト（`availableModels`）は `parameter.ts` で変更できます。ツール使用に対応したモデルの一覧、クロスリージョン推論プロファイルに関する注意、設定例は、[AI モデルのカスタマイズ](./deployment-options.md#ai-モデルのカスタマイズ)をご覧ください。
 
 ## 料金について
 
@@ -261,12 +261,12 @@ RAPID では Strands エージェントがファイル読み込みなどのツ�
 
 ### 管理者の初期セットアップ
 
-このプロジェクトは Cognito のカスタム属性 `rapid_role` を使用します。ID トークンに `custom:rapid_role=admin` が含まれる場合、バックエンドはそのユーザーを管理者として扱います。
+このプロジェクトは Cognito のカスタム属性 `vera_role` を使用します。ID トークンに `custom:vera_role=admin` が含まれる場合、バックエンドはそのユーザーを管理者として扱います。
 
-1. Cognito User Pool で対象ユーザーのカスタム属性 `rapid_role` を `admin` に設定します。
-2. ログイン後、ID トークンに `custom:rapid_role=admin` が含まれることを確認します。
+1. Cognito User Pool で対象ユーザーのカスタム属性 `vera_role` を `admin` に設定します。
+2. ログイン後、ID トークンに `custom:vera_role=admin` が含まれることを確認します。
 
-ローカル開発では `RAPID_LOCAL_DEV=true` を設定すると管理者として動作します。
+ローカル開発では `VERA_LOCAL_DEV=true` を設定すると管理者として動作します。
 
 ## コンタクト
 

@@ -1,6 +1,6 @@
 # Common Layout Patterns
 
-Reference implementations for common RAPID frontend layouts.
+Reference implementations for common VERA frontend layouts.
 
 ## Page Layout
 

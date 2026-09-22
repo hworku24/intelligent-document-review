@@ -152,7 +152,7 @@ export class Auth extends Construct {
       },
       accountRecovery: AccountRecovery.EMAIL_ONLY,
       customAttributes: {
-        rapid_role: new StringAttribute({ minLen: 0, maxLen: 2048 }),
+        vera_role: new StringAttribute({ minLen: 0, maxLen: 2048 }),
       },
       removalPolicy: RemovalPolicy.DESTROY, // 開発環境用。本番環境ではRETAINを検討
     });
@@ -198,7 +198,7 @@ export class Auth extends Construct {
       },
       readAttributes: new ClientAttributes()
         .withStandardAttributes(standardReadAttributes)
-        .withCustomAttributes("rapid_role"),
+        .withCustomAttributes("vera_role"),
       writeAttributes: new ClientAttributes().withStandardAttributes(
         standardWriteAttributes
       ),

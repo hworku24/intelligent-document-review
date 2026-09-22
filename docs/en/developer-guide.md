@@ -20,12 +20,12 @@ This guide summarizes information for developers working with this sample.
 
 ![](../imgs/arch.png)
 
-RAPID is deployed as **two CDK stacks**:
+VERA is deployed as **two CDK stacks**:
 
-- **`RapidFrontendWafStack`** — pinned to **us-east-1**, because a CloudFront-scoped AWS WAF Web ACL must be created there. It provisions the WAF IP set(s) and Web ACL and exports the Web ACL ARN.
-- **`RapidStack`** — the main stack. Change the deployment region with `CDK_DEFAULT_REGION`. It consumes the Web ACL ARN from the WAF stack via `crossRegionReferences`, so the WAF stack is deployed first.
+- **`VeraFrontendWafStack`** — pinned to **us-east-1**, because a CloudFront-scoped AWS WAF Web ACL must be created there. It provisions the WAF IP set(s) and Web ACL and exports the Web ACL ARN.
+- **`VeraStack`** — the main stack. Change the deployment region with `CDK_DEFAULT_REGION`. It consumes the Web ACL ARN from the WAF stack via `crossRegionReferences`, so the WAF stack is deployed first.
 
-> Amazon Bedrock / AgentCore calls use the same region as `RapidStack` (the region where the stack is deployed).
+> Amazon Bedrock / AgentCore calls use the same region as `VeraStack` (the region where the stack is deployed).
 
 At a high level:
 
@@ -33,13 +33,13 @@ At a high level:
 
    - [React](https://react.dev/) application hosted on [Amazon S3](https://aws.amazon.com/s3/)
    - Distribution via [Amazon CloudFront](https://aws.amazon.com/cloudfront/)
-   - Security protection with [AWS WAF](https://aws.amazon.com/waf/) (configurable IP allow-list), provisioned by the separate `RapidFrontendWafStack` in us-east-1
+   - Security protection with [AWS WAF](https://aws.amazon.com/waf/) (configurable IP allow-list), provisioned by the separate `VeraFrontendWafStack` in us-east-1
    - The version shown at the bottom of the sidebar is the latest Git tag, injected at build time as `VITE_APP_VERSION`.
 
 2. **Authentication / Authorization**
 
    - [Amazon Cognito](https://aws.amazon.com/cognito/) for user authentication (you can create a new pool or import an existing one)
-   - Whether a user is an admin is determined by their Amazon Cognito user's `custom:rapid_role` attribute being `admin`.
+   - Whether a user is an admin is determined by their Amazon Cognito user's `custom:vera_role` attribute being `admin`.
    - The backend verifies JWTs (issuer / audience / signature) and enforces authorization (owner ∨ admin)
 
 3. **API Layer**
@@ -111,9 +111,9 @@ It supports two evaluation paths: a file-read tool path, and a document-block pa
 │       ├── review-workflow/      # Review Processor step handlers
 │       └── handlers/             # migration runner
 ├── cdk/                     # AWS CDK (infrastructure)
-│   ├── bin/rapid.ts              # App entry — instantiates both stacks
+│   ├── bin/vera.ts              # App entry — instantiates both stacks
 │   └── lib/
-│       ├── rapid-stack.ts        # Main stack (defaults to us-west-2)
+│       ├── vera-stack.ts        # Main stack (defaults to us-west-2)
 │       ├── frontend-waf-stack.ts # CloudFront WAF stack (us-east-1)
 │       ├── parameter.ts          # User-editable parameters
 │       ├── parameter-schema.ts   # Parameter schema + defaults
@@ -134,7 +134,7 @@ It supports two evaluation paths: a file-read tool path, and a document-block pa
 
 ## Local Development Environment
 
-You can run the backend and frontend on your machine against a local MySQL container, while signing in with the deployed Amazon Cognito User Pool. Setting `RAPID_LOCAL_DEV=true` makes local backend requests run as an admin user.
+You can run the backend and frontend on your machine against a local MySQL container, while signing in with the deployed Amazon Cognito User Pool. Setting `VERA_LOCAL_DEV=true` makes local backend requests run as an admin user.
 
 The step-by-step guide — prerequisites, database setup, required environment variables, tests, Prisma Studio, and troubleshooting — is in [Local Development](./local-development.md).
 
@@ -147,7 +147,7 @@ See [CONTRIBUTING](../../CONTRIBUTING.md) for contribution guidelines. Package-s
 If you need to reset the database, retrieve the reset command from the stack output and execute it:
 
 ```bash
-RESET_COMMAND=$(aws cloudformation describe-stacks --stack-name RapidStack --query "Stacks[0].Outputs[?contains(OutputKey, 'ResetMigrationCommand')].OutputValue" --output text)
+RESET_COMMAND=$(aws cloudformation describe-stacks --stack-name VeraStack --query "Stacks[0].Outputs[?contains(OutputKey, 'ResetMigrationCommand')].OutputValue" --output text)
 eval $RESET_COMMAND
 ```
 
@@ -169,14 +169,14 @@ eval $RESET_COMMAND
      **Using AWS CLI** — retrieve the migration command from the stack output and execute it:
 
      ```bash
-     MIGRATION_COMMAND=$(aws cloudformation describe-stacks --stack-name RapidStack --query "Stacks[0].Outputs[?contains(OutputKey, 'DeployMigrationCommand')].OutputValue" --output text)
+     MIGRATION_COMMAND=$(aws cloudformation describe-stacks --stack-name VeraStack --query "Stacks[0].Outputs[?contains(OutputKey, 'DeployMigrationCommand')].OutputValue" --output text)
      eval $MIGRATION_COMMAND
      ```
 
      **Using AWS Management Console**:
 
      1. Go to the Lambda service in the AWS Management Console
-     2. Search for and select the Lambda function named `RapidStack-PrismaMigrationMigrationFunction~`
+     2. Search for and select the Lambda function named `VeraStack-PrismaMigrationMigrationFunction~`
      3. Select the "Test" tab
      4. Set the following JSON as the test event
         ```json

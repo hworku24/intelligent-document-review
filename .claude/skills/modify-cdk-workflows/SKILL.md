@@ -1,6 +1,6 @@
 ---
 name: modify-cdk-workflows
-description: Modify CDK Step Functions workflows (ReviewProcessor and ChecklistProcessor) for the RAPID application, including workflow step changes, Map State concurrency, retry/timeout configuration, error handling, and parameter updates. Use when changing workflow step sequences, adjusting concurrency, modifying retry logic, or adding/removing workflow steps.
+description: Modify CDK Step Functions workflows (ReviewProcessor and ChecklistProcessor) for the VERA application, including workflow step changes, Map State concurrency, retry/timeout configuration, error handling, and parameter updates. Use when changing workflow step sequences, adjusting concurrency, modifying retry logic, or adding/removing workflow steps.
 ---
 
 # Modify CDK Step Functions Workflows
@@ -69,7 +69,7 @@ const processItemsMap = new sfn.Map(this, "ProcessAllItems", {
 });
 ```
 
-Set via CDK parameters: `cdk deploy -c rapid.reviewMapConcurrency=5`
+Set via CDK parameters: `cdk deploy -c vera.reviewMapConcurrency=5`
 
 Trade-offs: Higher = faster but more cost/throttling. Lower = slower but predictable.
 
@@ -89,8 +89,8 @@ task.addRetry({
 1. Define in `parameter-schema.ts` with a default and a description (project
    convention — the real schema uses `.default(...)`, not `.optional()`):
    `reviewMapConcurrency: z.number().int().min(1).default(5).describe("...")`.
-   Users override the default in `cdk/lib/parameter.ts` (or via `-c rapid=...`).
-2. Pass to construct in `rapid-stack.ts`
+   Users override the default in `cdk/lib/parameter.ts` (or via `-c vera=...`).
+2. Pass to construct in `vera-stack.ts`
 3. Use in construct constructor
 
 ### 5. Modifying Timeouts

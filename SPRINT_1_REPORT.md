@@ -2,7 +2,7 @@
 
 ## Result
 
-The local RAPID development stack is installed and its build, test, database,
+The local VERA development stack is installed and its build, test, database,
 and runtime paths have been verified on Apple Silicon with Node.js 22.
 
 ## Environment
@@ -15,12 +15,12 @@ and runtime paths have been verified on Apple Silicon with Node.js 22.
 | uv | 0.12.17 |
 | Docker Engine | 29.6.1 |
 | Docker Compose | 5.3.0 |
-| MySQL | 8.0.46, running as `rapid-mysql` |
+| MySQL | 8.0.46, running as `vera-mysql` |
 
 ## Completed work
 
 - Started the repository's local MySQL Compose service.
-- Verified the documented `rapid_user` can connect to the `rapid` database.
+- Verified the documented `vera_user` can connect to the `vera` database.
 - Installed backend, frontend, and CDK dependencies with `npm ci`.
 - Synced review-agent dependencies with `uv sync --extra dev`.
 - Generated the Prisma client and applied all twelve tracked migrations.
@@ -92,7 +92,7 @@ Start the backend:
 
 ```bash
 cd backend
-export RAPID_LOCAL_DEV=true
+export VERA_LOCAL_DEV=true
 npm run dev
 ```
 

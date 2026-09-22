@@ -1,6 +1,6 @@
 # ローカル開発
 
-このドキュメントでは、開発のために RAPID のバックエンドとフロントエンドを手元のマシンで実行する方法を説明します。アーキテクチャは[開発者ガイド](./developer-guide.md#アーキテクチャ)を、アプリケーションのデプロイは [README](./README_ja.md#デプロイ方法) をご覧ください。
+このドキュメントでは、開発のために VERA のバックエンドとフロントエンドを手元のマシンで実行する方法を説明します。アーキテクチャは[開発者ガイド](./developer-guide.md#アーキテクチャ)を、アプリケーションのデプロイは [README](./README_ja.md#デプロイ方法) をご覧ください。
 
 ## 目次
 
@@ -20,7 +20,7 @@
 - **Docker / Docker Compose** — ローカルの MySQL データベースを実行します
 - **AWS CLI（設定済み）** — Cognito ユーザーの作成や、デプロイ済みスタックへのオプション機能の接続に使用します
 - **Python 3.13 以上と [uv](https://docs.astral.sh/uv/)** — 審査エージェント（`review-item-processor/`）を扱う場合のみ必要です
-- **デプロイ済みの `RapidStack`** — フロントエンドはデプロイ済みの Amazon Cognito User Pool に対してサインインします（フロントエンドにローカル用の認証バイパスはありません）。また、アップロードやワークフロー系の機能はデプロイ済みの AWS リソースを呼び出します
+- **デプロイ済みの `VeraStack`** — フロントエンドはデプロイ済みの Amazon Cognito User Pool に対してサインインします（フロントエンドにローカル用の認証バイパスはありません）。また、アップロードやワークフロー系の機能はデプロイ済みの AWS リソースを呼び出します
 
 ## バックエンドのセットアップ
 
@@ -35,7 +35,7 @@ docker compose -f assets/local/docker-compose.yml up -d
 これにより、MySQL 8.0 のコンテナ（デプロイ先の Aurora MySQL バージョン 3 が互換性を持つ MySQL バージョンと同じ）が以下の設定で起動します。
 
 - ホスト: `localhost` / ポート: `3306`
-- データベース名: `rapid` / ユーザー名: `rapid_user` / パスワード: `rapid_password`
+- データベース名: `vera` / ユーザー名: `vera_user` / パスワード: `vera_password`
 
 同梱の初期化スクリプトが Prisma のシャドウデータベース作成に必要な権限を付与するため、`prisma migrate dev` はそのまま動作します。データをリセットしたい場合は、ボリュームを削除して再起動します。
 
@@ -51,7 +51,7 @@ docker compose -f assets/local/docker-compose.yml up -d
 ```bash
 cd backend
 npm ci
-export DATABASE_URL="mysql://rapid_user:rapid_password@localhost:3306/rapid"
+export DATABASE_URL="mysql://vera_user:vera_password@localhost:3306/vera"
 npm run prisma:generate
 npm run prisma:migrate
 ```
@@ -61,15 +61,15 @@ npm run prisma:migrate
 ### 3. 環境変数の設定
 
 ```bash
-export RAPID_LOCAL_DEV=true
+export VERA_LOCAL_DEV=true
 ```
 
-`RAPID_LOCAL_DEV=true` を設定すると、ローカルバックエンドの認証がバイパスされ、すべてのリクエストがモックの**管理者**ユーザーとして実行されます（このフラグは Lambda 上では無効です）。
+`VERA_LOCAL_DEV=true` を設定すると、ローカルバックエンドの認証がバイパスされ、すべてのリクエストがモックの**管理者**ユーザーとして実行されます（このフラグは Lambda 上では無効です）。
 
 オプションで、ローカルバックエンドをデプロイ済みスタックのリソースへ接続できます。これにより、ドキュメントのアップロード／ダウンロード（Amazon S3 の presigned URL）、チェックリスト抽出・審査ジョブの投入、曖昧性検出、項目ごとのモデル選択リストが有効になります。
 
 ```bash
-export AWS_REGION="<region of your RapidStack>"
+export AWS_REGION="<region of your VeraStack>"
 export DOCUMENT_BUCKET="<document bucket name>"
 export DOCUMENT_PROCESSING_STATE_MACHINE_ARN="<Checklist Processor state machine ARN>"
 export REVIEW_QUEUE_URL="<review queue URL>"
@@ -98,7 +98,7 @@ cp .env.example .env.local
 
 `.env.local` を編集します。
 
-- `VITE_APP_USER_POOL_ID` / `VITE_APP_USER_POOL_CLIENT_ID` / `VITE_APP_REGION` — CDK デプロイ出力（`RapidStack.AuthUserPoolId...` / `RapidStack.AuthUserPoolClientId...`）または Amazon Cognito コンソールから取得します
+- `VITE_APP_USER_POOL_ID` / `VITE_APP_USER_POOL_CLIENT_ID` / `VITE_APP_REGION` — CDK デプロイ出力（`VeraStack.AuthUserPoolId...` / `VeraStack.AuthUserPoolClientId...`）または Amazon Cognito コンソールから取得します
 - `VITE_APP_API_ENDPOINT` — ローカルバックエンドを使う場合は `http://localhost:3000`（未設定時のフォールバック値も同じです）
 
 続いて開発サーバーを起動します。
@@ -108,7 +108,7 @@ cd frontend
 npm run dev
 ```
 
-フロントエンドは `http://localhost:5173` で起動します。デプロイ済み User Pool のユーザーでサインインしてください（[管理者の初期セットアップ](./README_ja.md#管理者の初期セットアップ)参照）。バックエンドの認可は `RAPID_LOCAL_DEV` でバイパスされますが、フロントエンドのサインイン画面自体には実際の Cognito ユーザーが必要です。
+フロントエンドは `http://localhost:5173` で起動します。デプロイ済み User Pool のユーザーでサインインしてください（[管理者の初期セットアップ](./README_ja.md#管理者の初期セットアップ)参照）。バックエンドの認可は `VERA_LOCAL_DEV` でバイパスされますが、フロントエンドのサインイン画面自体には実際の Cognito ユーザーが必要です。
 
 ## 動作確認
 

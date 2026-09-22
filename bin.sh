@@ -7,9 +7,9 @@ echo "  / /_/ / /| | / /_/ // // / / / "
 echo " / _, _/ ___ |/ ____// // /_/ /  "
 echo "/_/ |_/_/  |_/_/   /___/_____/   "
 echo ""
-echo "Review & Assessment Powered by Intelligent Documentation"
+echo "Verification and Evidence Review Assistant"
 echo "---------------------------------------------------------------------------"
-echo "  This script deploys the RAPID application using AWS CodeBuild."
+echo "  This script deploys the VERA application using AWS CodeBuild."
 echo "  No local environment dependencies - deployment runs entirely in AWS."
 echo ""
 echo "  ⚠️  WARNING: Auto-migration is enabled by default."
@@ -33,7 +33,7 @@ AGENT_CORE_NETWORK_MODE="PUBLIC"
 BEDROCK_REGION="us-west-2"
 DOCUMENT_PROCESSING_MODEL_ID=""
 IMAGE_REVIEW_MODEL_ID=""
-REPO_URL="https://github.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation.git"
+REPO_URL="https://github.com/hworku24/intelligent-document-review.git"
 BRANCH="main"
 GIT_TAG=""
 
@@ -118,7 +118,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Prepare working directory (ensure idempotency)
-WORK_DIR="rapid-deploy-$(date +%s)"
+WORK_DIR="vera-deploy-$(date +%s)"
 if [ -d "$WORK_DIR" ]; then
   echo "Removing existing working directory: $WORK_DIR"
   rm -rf "$WORK_DIR"
@@ -152,7 +152,7 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
-StackName="RapidCodeBuildDeploy"
+StackName="VeraCodeBuildDeploy"
 
 # Deploy CloudFormation stack
 aws cloudformation deploy \

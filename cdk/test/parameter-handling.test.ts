@@ -45,13 +45,13 @@ describe("Parameter Handling Tests", () => {
       // GIVEN - app with context parameters
       const app = new cdk.App({
         context: {
-          "rapid.cognitoSelfSignUpEnabled": false,
+          "vera.cognitoSelfSignUpEnabled": false,
         },
       });
 
       // WHEN - context parameters are extracted directly
       const selfSignUpEnabled = app.node.tryGetContext(
-        "rapid.cognitoSelfSignUpEnabled"
+        "vera.cognitoSelfSignUpEnabled"
       );
 
       // THEN - value should come from context

@@ -1,6 +1,6 @@
 ---
 name: plan-backend-frontend
-description: Create implementation plans for backend API endpoints and frontend features following RAPID layered architecture (domain/usecase/routes pattern, SWR hooks, feature-based organization). Use when adding or modifying backend APIs, frontend components, database schemas, or repository implementations. Also use for refactoring backend/frontend code.
+description: Create implementation plans for backend API endpoints and frontend features following VERA layered architecture (domain/usecase/routes pattern, SWR hooks, feature-based organization). Use when adding or modifying backend APIs, frontend components, database schemas, or repository implementations. Also use for refactoring backend/frontend code.
 ---
 
 # Plan Backend/Frontend Feature Implementation
@@ -112,10 +112,10 @@ Start backend server with auth bypassed:
 
 ```bash
 cd backend
-RAPID_LOCAL_DEV=true npm run dev
+VERA_LOCAL_DEV=true npm run dev
 ```
 
-Server starts at `http://localhost:3000`. `RAPID_LOCAL_DEV=true` bypasses Cognito auth and injects mock user.
+Server starts at `http://localhost:3000`. `VERA_LOCAL_DEV=true` bypasses Cognito auth and injects mock user.
 
 ```bash
 # Test endpoints

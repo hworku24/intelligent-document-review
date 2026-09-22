@@ -1,7 +1,7 @@
 {
-  "name": "rapid-backend",
+  "name": "vera-backend",
   "version": "1.0.0",
-  "description": "RAPID (Review & Assessment Powered by Intelligent Documentation) Backend",
+  "description": "VERA (Verification and Evidence Review Assistant) Backend",
   "main": "dist/api/index.js",
   "engines": {
     "node": ">=20.0.0"

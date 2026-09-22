@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
 import { Aspects } from "aws-cdk-lib";
-import { RapidStack } from "../lib/rapid-stack";
+import { VeraStack } from "../lib/vera-stack";
 import { FrontendWafStack } from "../lib/frontend-waf-stack";
 import {
   extractContextParameters,
@@ -20,7 +20,7 @@ const parameters = resolveParameters(contextParams);
 
 // closedNetwork always implies the S3+APIGW frontend (CloudFront is impossible
 // in a closed network). In both intermediate and closed modes the CloudFront
-// WAF stack (us-east-1) is skipped; a REGIONAL WAF is created inside RapidStack.
+// WAF stack (us-east-1) is skipped; a REGIONAL WAF is created inside VeraStack.
 const useS3ApiGwFrontend =
   parameters.s3ApiGatewayFrontend || parameters.closedNetwork;
 
@@ -29,7 +29,7 @@ const useS3ApiGwFrontend =
 // https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-wafv2-webacl.html
 const waf = useS3ApiGwFrontend
   ? undefined
-  : new FrontendWafStack(app, `RapidFrontendWafStack`, {
+  : new FrontendWafStack(app, `VeraFrontendWafStack`, {
       env: {
         account: process.env.CDK_DEFAULT_ACCOUNT,
         region: "us-east-1",
@@ -39,7 +39,7 @@ const waf = useS3ApiGwFrontend
       allowedIpV6AddressRanges: parameters.allowedIpV6AddressRanges,
     });
 
-new RapidStack(app, "RapidStack", {
+new VeraStack(app, "VeraStack", {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION || "us-west-2",
@@ -61,7 +61,7 @@ import { applyNagSuppressions } from "../lib/nag-suppressions";
 // Apply suppressions after stacks are constructed (and before synth)
 const stacks = app.node.children.filter((child) => child instanceof cdk.Stack);
 for (const stack of stacks) {
-  if (stack instanceof RapidStack) {
+  if (stack instanceof VeraStack) {
     applyNagSuppressions(stack);
   }
 }

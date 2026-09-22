@@ -64,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Backend `Api` construct gained an `endpointMode` (`EDGE` | `REGIONAL` |
     `PRIVATE`), plus optional VPC endpoint / subnet selection and a PRIVATE
     resource policy, without changing its routing.
-  - `bin/rapid.ts` skips the CloudFront WAF stack (us-east-1) in S3+APIGW and
+  - `bin/vera.ts` skips the CloudFront WAF stack (us-east-1) in S3+APIGW and
     closed modes.
   - Frontend: env-driven Vite `base` (`VITE_APP_BASE_PATH`) and a `publicAsset`
     helper so runtime/JSON asset paths resolve under the stage prefix.

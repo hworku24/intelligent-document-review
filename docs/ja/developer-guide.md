@@ -28,13 +28,13 @@
 
 ![](../imgs/arch.png)
 
-RAPID は **2 つの CDK スタック**としてデプロイされます。
+VERA は **2 つの CDK スタック**としてデプロイされます。
 
-* **`RapidFrontendWafStack`** — **us-east-1** に固定されます。CloudFront 用の AWS WAF Web ACL は us-east-1 に作成する必要があるためです。WAF の IP セットと Web ACL を作成し、Web ACL ARN を出力します。
+* **`VeraFrontendWafStack`** — **us-east-1** に固定されます。CloudFront 用の AWS WAF Web ACL は us-east-1 に作成する必要があるためです。WAF の IP セットと Web ACL を作成し、Web ACL ARN を出力します。
 
-* **`RapidStack`** — メインスタックです。`CDK_DEFAULT_REGION` でデプロイ先のリージョンを変更可能です。`crossRegionReferences` により WAF スタックの Web ACL ARN を参照するため、WAF スタックが先にデプロイされます。
+* **`VeraStack`** — メインスタックです。`CDK_DEFAULT_REGION` でデプロイ先のリージョンを変更可能です。`crossRegionReferences` により WAF スタックの Web ACL ARN を参照するため、WAF スタックが先にデプロイされます。
 
-> Amazon Bedrock / AgentCore の呼び出しは `RapidStack` と同じリージョン（スタックをデプロイしたリージョン）を使用します。
+> Amazon Bedrock / AgentCore の呼び出しは `VeraStack` と同じリージョン（スタックをデプロイしたリージョン）を使用します。
 
 概要は以下のとおりです。
 
@@ -44,7 +44,7 @@ RAPID は **2 つの CDK スタック**としてデプロイされます。
 
    * [Amazon CloudFront](https://aws.amazon.com/cloudfront/) によるコンテンツの配信
 
-   * [AWS WAF](https://aws.amazon.com/waf/) によるセキュリティ保護（IP 許可リスト設定可）。これは us-east-1 の別スタック `RapidFrontendWafStack` が作成します。
+   * [AWS WAF](https://aws.amazon.com/waf/) によるセキュリティ保護（IP 許可リスト設定可）。これは us-east-1 の別スタック `VeraFrontendWafStack` が作成します。
 
    * サイドバー下部に表示されるバージョンは最新の Git タグで、ビルド時に `VITE_APP_VERSION` として注入されます。
 
@@ -52,7 +52,7 @@ RAPID は **2 つの CDK スタック**としてデプロイされます。
 
    * [Amazon Cognito](https://aws.amazon.com/cognito/) によるユーザー認証（新規プール作成、または既存プールのインポートが可能です）
 
-   * ユーザーが管理者であるかどうかの判定は、Amazon Cognito ユーザーの `custom:rapid_role` 属性が `admin` であることを基準にしています。
+   * ユーザーが管理者であるかどうかの判定は、Amazon Cognito ユーザーの `custom:vera_role` 属性が `admin` であることを基準にしています。
 
    * バックエンドは JWT（issuer / audience / 署名）を検証し、認可（owner ∨ admin）を適用します。
 
@@ -131,9 +131,9 @@ Strands エージェント（`review-item-processor` コンテナイメージと
 │       ├── review-workflow/      # 審査プロセッサのステップハンドラ
 │       └── handlers/             # マイグレーション実行
 ├── cdk/                     # AWS CDK（インフラ）
-│   ├── bin/rapid.ts              # アプリのエントリ — 2 つのスタックを生成
+│   ├── bin/vera.ts              # アプリのエントリ — 2 つのスタックを生成
 │   └── lib/
-│       ├── rapid-stack.ts        # メインスタック（デフォルト us-west-2）
+│       ├── vera-stack.ts        # メインスタック（デフォルト us-west-2）
 │       ├── frontend-waf-stack.ts # CloudFront WAF スタック（us-east-1）
 │       ├── parameter.ts          # ユーザーが編集するパラメータ
 │       ├── parameter-schema.ts   # パラメータスキーマ + デフォルト値
@@ -158,7 +158,7 @@ Strands エージェント（`review-item-processor` コンテナイメージと
 
 ## ローカル開発環境
 
-ローカルの MySQL コンテナを使って、バックエンドとフロントエンドを手元のマシンで実行できます（サインインにはデプロイ済みの Amazon Cognito User Pool を使用します）。`RAPID_LOCAL_DEV=true` を設定すると、ローカルバックエンドへのリクエストは管理者ユーザーとして動作します。
+ローカルの MySQL コンテナを使って、バックエンドとフロントエンドを手元のマシンで実行できます（サインインにはデプロイ済みの Amazon Cognito User Pool を使用します）。`VERA_LOCAL_DEV=true` を設定すると、ローカルバックエンドへのリクエストは管理者ユーザーとして動作します。
 
 前提条件・データベースのセットアップ・必要な環境変数・テスト・Prisma Studio・トラブルシューティングを含むステップバイステップの手順は、[ローカル開発](./local-development.md)をご覧ください。
 
@@ -171,7 +171,7 @@ Strands エージェント（`review-item-processor` コンテナイメージと
 DB をリセットする必要がある場合は、スタックの Output からリセットコマンドを取得して実行します：
 
 ```bash
-RESET_COMMAND=$(aws cloudformation describe-stacks --stack-name RapidStack --query "Stacks[0].Outputs[?contains(OutputKey, 'ResetMigrationCommand')].OutputValue" --output text)
+RESET_COMMAND=$(aws cloudformation describe-stacks --stack-name VeraStack --query "Stacks[0].Outputs[?contains(OutputKey, 'ResetMigrationCommand')].OutputValue" --output text)
 eval $RESET_COMMAND
 ```
 
@@ -195,14 +195,14 @@ eval $RESET_COMMAND
      **AWS CLI を使用** — スタックの Output からマイグレーションコマンドを取得して実行します：
 
      ```bash
-     MIGRATION_COMMAND=$(aws cloudformation describe-stacks --stack-name RapidStack --query "Stacks[0].Outputs[?contains(OutputKey, 'DeployMigrationCommand')].OutputValue" --output text)
+     MIGRATION_COMMAND=$(aws cloudformation describe-stacks --stack-name VeraStack --query "Stacks[0].Outputs[?contains(OutputKey, 'DeployMigrationCommand')].OutputValue" --output text)
      eval $MIGRATION_COMMAND
      ```
 
      **AWS Management Console を使用**:
 
      1. AWS Management Console で、Lambda サービスに移動します。
-     2. `RapidStack-PrismaMigrationMigrationFunction~` という名前の Lambda 関数を検索して選択します。
+     2. `VeraStack-PrismaMigrationMigrationFunction~` という名前の Lambda 関数を検索して選択します。
      3. 「テスト」タブを選択します。
      4. 以下の JSON をテストイベントとして設定します。
 

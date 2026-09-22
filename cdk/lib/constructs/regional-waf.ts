@@ -33,7 +33,7 @@ export class RegionalWaf extends Construct {
       });
       rules.push({
         priority: 0,
-        name: "RapidRegionalWebAclIpV4RuleSet",
+        name: "VeraRegionalWebAclIpV4RuleSet",
         action: { allow: {} },
         visibilityConfig: {
           cloudWatchMetricsEnabled: true,
@@ -54,7 +54,7 @@ export class RegionalWaf extends Construct {
       });
       rules.push({
         priority: 1,
-        name: "RapidRegionalWebAclIpV6RuleSet",
+        name: "VeraRegionalWebAclIpV6RuleSet",
         action: { allow: {} },
         visibilityConfig: {
           cloudWatchMetricsEnabled: true,
@@ -75,7 +75,7 @@ export class RegionalWaf extends Construct {
 
     const webAcl = new wafv2.CfnWebACL(this, "RegionalWebAcl", {
       defaultAction: { block: {} },
-      name: `${cdk.Stack.of(this).stackName}-RapidRegionalWebAcl`,
+      name: `${cdk.Stack.of(this).stackName}-VeraRegionalWebAcl`,
       scope: "REGIONAL",
       visibilityConfig: {
         cloudWatchMetricsEnabled: true,

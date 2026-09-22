@@ -1,6 +1,6 @@
-# RAPID CDK
+# VERA CDK
 
-AWS CDK infrastructure for the RAPID project. See the [top-level README](../README.md)
+AWS CDK infrastructure for the VERA project. See the [top-level README](../README.md)
 for full deployment instructions and parameter customization.
 
 The `cdk.json` file tells the CDK Toolkit how to execute the app.

@@ -1,6 +1,6 @@
 # Frontend Architecture Patterns
 
-Reference implementations for the RAPID frontend feature-based architecture.
+Reference implementations for the VERA frontend feature-based architecture.
 
 ## Feature Structure
 

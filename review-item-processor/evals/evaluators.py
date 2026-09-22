@@ -1,5 +1,5 @@
 """
-Custom evaluators for RAPID review agent.
+Custom evaluators for VERA review agent.
 
 Implements:
 - AccuracyEvaluator: Compares agent result vs ground truth

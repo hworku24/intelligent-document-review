@@ -1,6 +1,6 @@
 # Backend Architecture Patterns
 
-Reference implementations for the RAPID backend layered architecture.
+Reference implementations for the VERA backend layered architecture.
 
 ## Layered Structure
 

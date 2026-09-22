@@ -48,15 +48,15 @@ export async function authMiddleware(
     const payload = await verifier.verify(token);
 
     // 検証に成功したらリクエストにユーザー情報を追加
-    // カスタムクレーム 'custom:rapid_role' を参照して isAdmin を設定する。
-    // payload 内に 'custom:rapid_role' がない場合はフォールバックとして isAdmin=false を採用する（運用でトークンに含めることを推奨）。
+    // カスタムクレーム 'custom:vera_role' を参照して isAdmin を設定する。
+    // payload 内に 'custom:vera_role' がない場合はフォールバックとして isAdmin=false を採用する（運用でトークンに含めることを推奨）。
     // 必要に応じて Cognito Admin API を呼ぶフォールバック実装を追加できるがレイテンシの懸念があるためデフォルトでは実装しない。
     const userId =
       (payload.sub as string) || (payload.username as string) || "";
-    const rapidRole = (payload["custom:rapid_role"] ??
-      payload["custom_rapid_role"]) as string | undefined;
+    const veraRole = (payload["custom:vera_role"] ??
+      payload["custom_vera_role"]) as string | undefined;
     const isAdmin =
-      typeof rapidRole === "string" && rapidRole.toLowerCase() === "admin";
+      typeof veraRole === "string" && veraRole.toLowerCase() === "admin";
 
     request.user = {
       userId,

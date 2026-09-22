@@ -1,5 +1,5 @@
 # Constraints applied whenever uv/uvx resolves dependencies for MCP servers
-# launched by RAPID (tool preview in the API container, review-time execution
+# launched by VERA (tool preview in the API container, review-time execution
 # in the agent container). Two identical copies exist — keep them in sync:
 #   backend/mcp-uv-constraints.txt
 #   review-item-processor/mcp-uv-constraints.txt

@@ -1,10 +1,10 @@
 import { NagSuppressions } from "cdk-nag";
-import { RapidStack } from "./rapid-stack";
+import { VeraStack } from "./vera-stack";
 
 /**
  * Apply NagSuppressions to resources based on business requirements
  */
-export function applyNagSuppressions(stack: RapidStack): void {
+export function applyNagSuppressions(stack: VeraStack): void {
   // Individual construct-specific suppressions have been moved to their respective construct files
   // Only applying general stack-level suppressions here
   applyIamSuppressions(stack);
@@ -14,7 +14,7 @@ export function applyNagSuppressions(stack: RapidStack): void {
 /**
  * Apply suppressions for Lambda-related findings
  */
-function applyLambdaSuppressions(stack: RapidStack): void {
+function applyLambdaSuppressions(stack: VeraStack): void {
   // Target specific auto-generated Lambda functions instead of the entire stack
 
   // AWS Custom Resource handlers
@@ -81,7 +81,7 @@ function applyLambdaSuppressions(stack: RapidStack): void {
 /**
  * Apply stack-level suppressions for IAM-related findings
  */
-function applyIamSuppressions(stack: RapidStack): void {
+function applyIamSuppressions(stack: VeraStack): void {
   // These construct-specific suppressions have been moved to their respective construct files
   // Only stack-level suppressions remain here
 

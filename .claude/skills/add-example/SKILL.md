@@ -48,7 +48,7 @@ If the use case includes multiple PDF files requiring visual differentiation:
 For each file, construct the raw GitHub URL:
 
 ```
-https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/examples/{lang}/{folder}/{file}
+https://raw.githubusercontent.com/hworku24/intelligent-document-review/main/examples/{lang}/{folder}/{file}
 ```
 
 **Important**: Japanese characters MUST be URL-encoded using `encodeURIComponent()`.

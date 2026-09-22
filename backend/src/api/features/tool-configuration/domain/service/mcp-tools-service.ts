@@ -116,7 +116,7 @@ async function listToolsFromServer(
 
     client = new Client(
       {
-        name: "rapid-mcp-preview",
+        name: "vera-mcp-preview",
         version: "1.0.0",
       },
       {

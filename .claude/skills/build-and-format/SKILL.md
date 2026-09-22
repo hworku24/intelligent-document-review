@@ -1,6 +1,6 @@
 ---
 name: build-and-format
-description: Run build verification and code formatting across all RAPID project components (backend, frontend, CDK). Use after implementing code changes, before committing, after modifying Prisma schema, or before creating a pull request.
+description: Run build verification and code formatting across all VERA project components (backend, frontend, CDK). Use after implementing code changes, before committing, after modifying Prisma schema, or before creating a pull request.
 ---
 
 # Build and Format Verification

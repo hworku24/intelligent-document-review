@@ -1,6 +1,6 @@
 # Deployment Options
 
-This document describes RAPID's deployment and configuration options in detail. For the basic deployment steps and the full parameter table, see the [README](../../README.md#deployment-methods).
+This document describes VERA's deployment and configuration options in detail. For the basic deployment steps and the full parameter table, see the [README](../../README.md#deployment-methods).
 
 ## Table of Contents
 
@@ -14,7 +14,7 @@ This document describes RAPID's deployment and configuration options in detail. 
 The CloudShell deployment script (`bin.sh`) accepts the following options. Pass each value after the option name, separated by a space:
 
 ```bash
-wget -O - https://raw.githubusercontent.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation/main/bin.sh | bash -s -- --ipv4-ranges '["192.168.0.0/16"]' --cognito-self-signup false
+wget -O - https://raw.githubusercontent.com/hworku24/intelligent-document-review/main/bin.sh | bash -s -- --ipv4-ranges '["192.168.0.0/16"]' --cognito-self-signup false
 ```
 
 Most options map directly to the CDK parameters described in [Parameter Customization](../../README.md#parameter-customization); see that table for what each parameter does.
@@ -59,7 +59,7 @@ export const parameters = {
 As CLI context at deploy time:
 
 ```bash
-npx cdk deploy --all -c rapid.closedNetwork=true
+npx cdk deploy --all -c vera.closedNetwork=true
 ```
 
 Or as an option of the CloudShell script:
@@ -151,10 +151,10 @@ export const parameters = {
 
 - **An imported Amazon Cognito User Pool** (only when you deployed with `cognitoUserPoolId`): it is referenced, not managed by the stack, so it and its users survive the destroy (this is intended).
 - Some **CloudWatch Logs** log groups (Step Functions, VPC flow logs, the review-queue consumer) and container images pushed to the CDK bootstrap **ECR** repository may remain.
-- If you deployed via **CloudShell**, the helper stack `RapidCodeBuildDeploy` (from [`deploy.yml`](../../deploy.yml)) is separate from the CDK app and is **not** removed by `cdk destroy`. Delete it from the CloudFormation console / CLI so its broad `AdministratorAccess` CodeBuild role is not left behind:
+- If you deployed via **CloudShell**, the helper stack `VeraCodeBuildDeploy` (from [`deploy.yml`](../../deploy.yml)) is separate from the CDK app and is **not** removed by `cdk destroy`. Delete it from the CloudFormation console / CLI so its broad `AdministratorAccess` CodeBuild role is not left behind:
 
   ```bash
-  aws cloudformation delete-stack --stack-name RapidCodeBuildDeploy
+  aws cloudformation delete-stack --stack-name VeraCodeBuildDeploy
   ```
 
 ### `cdk destroy` fails with `DELETE_FAILED` on the VPC subnets / security group (VPC mode only)
@@ -162,7 +162,7 @@ export const parameters = {
 > [!Tip]
 > This issue occurs **only** when `agentCoreNetworkMode` is set to `"VPC"`. The default setting (`"PUBLIC"`) does not create ENIs in your VPC, so `cdk destroy --all` completes immediately without this problem.
 
-When running in VPC mode, the review agent uses the Amazon Bedrock AgentCore Runtime, which creates service-managed elastic network interfaces (ENIs, interface type `agentic_ai`, tagged `AmazonBedrockAgentCoreManaged=true`) in `RapidStack`'s private subnets. When you destroy the stack, CloudFormation deletes the AgentCore Runtime successfully but **these ENIs are not released immediately**, so the subnets and the review-processor security group cannot be deleted yet and the stack ends in `DELETE_FAILED` with messages like `The subnet '...' has dependencies and cannot be deleted` and `resource sg-... has a dependent object`.
+When running in VPC mode, the review agent uses the Amazon Bedrock AgentCore Runtime, which creates service-managed elastic network interfaces (ENIs, interface type `agentic_ai`, tagged `AmazonBedrockAgentCoreManaged=true`) in `VeraStack`'s private subnets. When you destroy the stack, CloudFormation deletes the AgentCore Runtime successfully but **these ENIs are not released immediately**, so the subnets and the review-processor security group cannot be deleted yet and the stack ends in `DELETE_FAILED` with messages like `The subnet '...' has dependencies and cannot be deleted` and `resource sg-... has a dependent object`.
 
 This is expected behavior, not a bug. Per the AWS documentation:
 

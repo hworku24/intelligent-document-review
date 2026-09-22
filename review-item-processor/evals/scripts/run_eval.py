@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Run evaluations on RAPID review agent.
+Run evaluations on VERA review agent.
 
 Usage:
     # Run on test suite
@@ -40,7 +40,7 @@ from evals import (
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Run evaluations on RAPID review agent",
+        description="Run evaluations on VERA review agent",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )

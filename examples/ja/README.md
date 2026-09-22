@@ -1,6 +1,6 @@
-# RAPID サンプル例集
+# VERA サンプル例集
 
-このディレクトリには、RAPID（Review & Assessment Powered by Intelligent Documentation）の具体的な使用例が含まれています。各ユースケースには、チェックリストと審査対象書類のサンプルが用意されており、実際の業務での活用方法を理解できます。
+このディレクトリには、VERA（Verification and Evidence Review Assistant）の具体的な使用例が含まれています。各ユースケースには、チェックリストと審査対象書類のサンプルが用意されており、実際の業務での活用方法を理解できます。
 
 ## 収録されているユースケース
 
@@ -91,12 +91,12 @@
      - `見積書に関するルール集（ナレッジ）.txt`
 
 2. **ツール設定の構成**
-   - RAPIDシステムでツール設定を行います
+   - VERAシステムでツール設定を行います
    - 作成したKnowledge Base IDを参照するように設定します
    - コードインタープリタを有効化します
 
 3. **チェックリストのアップロード**
-   - `見積書チェックリスト.pdf`をRAPIDにアップロードします
+   - `見積書チェックリスト.pdf`をVERAにアップロードします
 
 4. **ツール設定の割り当て**
    - チェックリスト作成後、チェックリスト詳細画面でツール設定を各チェック項目に割り当てます
@@ -135,11 +135,11 @@
      - `医薬品リスク管理計画（RMP）策定ガイドライン.pdf`
 
 2. **ツール設定の構成**
-   - RAPIDシステムでツール設定を行います
+   - VERAシステムでツール設定を行います
    - 作成したKnowledge Base IDを参照するように設定します
 
 3. **チェックリストのアップロード**
-   - `新薬承認申請チェックリスト.pdf`をRAPIDにアップロードします
+   - `新薬承認申請チェックリスト.pdf`をVERAにアップロードします
 
 4. **ツール設定の割り当て**
    - チェックリスト作成後、チェックリスト詳細画面でツール設定を各チェック項目に割り当てます
@@ -176,7 +176,7 @@ npx cdk bootstrap  # 初回のみ
 npx cdk deploy AwsSecurityAuditGatewayStack --region ap-northeast-1
 ```
 
-**重要**: このスタックは **RAPIDがデプロイされている同一AWSアカウント** と同じアカウント・リージョンにデプロイしてください。
+**重要**: このスタックは **VERAがデプロイされている同一AWSアカウント** と同じアカウント・リージョンにデプロイしてください。
 
 デプロイが完了すると、Stack outputsに以下の情報が表示されます：
 
@@ -186,7 +186,7 @@ npx cdk deploy AwsSecurityAuditGatewayStack --region ap-northeast-1
 
 **2. Tool Configuration設定**
 
-1. RAPID UIでTool Configuration画面を開く
+1. VERA UIでTool Configuration画面を開く
 2. 新規作成をクリック
 3. Stack outputsの `McpConfiguration` 値をコピーしてMCP Config欄に貼り付け（**Stdio transport format**）：
 
@@ -215,7 +215,7 @@ npx cdk deploy AwsSecurityAuditGatewayStack --region ap-northeast-1
 
 ## 使用方法
 
-1. 各ユースケースのディレクトリから、チェックリストと審査対象書類を RAPID システムにアップロードします
+1. 各ユースケースのディレクトリから、チェックリストと審査対象書類を VERA システムにアップロードします
 2. システムが AI を使用して自動的に書類を分析し、チェックリストとの照合を行います
 3. 結果を確認し、必要に応じて人間による最終判断を行います
 

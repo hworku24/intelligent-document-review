@@ -1,6 +1,6 @@
-# RAPID Sample Use Cases
+# VERA Sample Use Cases
 
-This directory contains practical examples for RAPID (Review & Assessment Powered by Intelligent Documentation). Each use case includes sample checklists and review documents to help you understand how to apply RAPID in real-world scenarios.
+This directory contains practical examples for VERA (Verification and Evidence Review Assistant). Each use case includes sample checklists and review documents to help you understand how to apply VERA in real-world scenarios.
 
 ## Available Use Cases
 
@@ -39,8 +39,8 @@ This directory contains practical examples for RAPID (Review & Assessment Powere
 **Setup Instructions**:
 
 1. Create a Bedrock Knowledge Base in your AWS account and upload the knowledge base sources (HVAC, lighting, motor, building envelope calculation documents)
-2. Configure the tool configuration in RAPID to reference your Knowledge Base ID and enable code interpreter
-3. Upload the checklist to RAPID
+2. Configure the tool configuration in VERA to reference your Knowledge Base ID and enable code interpreter
+3. Upload the checklist to VERA
 4. After checklist creation, assign the tool configuration to checklist items in the checklist detail interface
 5. Execute the review
 
@@ -48,7 +48,7 @@ This directory contains practical examples for RAPID (Review & Assessment Powere
 
 ## How to Use
 
-1. Upload the checklist and review documents from each use case directory to the RAPID system
+1. Upload the checklist and review documents from each use case directory to the VERA system
 2. The system will automatically analyze the documents using AI and cross-reference them with the checklist
 3. Review the results and make final human judgment as needed
 

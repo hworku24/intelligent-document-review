@@ -18,10 +18,10 @@ RUN npm run build
 # Constraints for uv/uvx dependency resolution of MCP servers (caps mcp<2;
 # see the file for why). Applied at build time below and at runtime via the
 # UV_CONSTRAINT environment variable, so both resolutions agree.
-COPY mcp-uv-constraints.txt /opt/rapid/mcp-uv-constraints.txt
+COPY mcp-uv-constraints.txt /opt/vera/mcp-uv-constraints.txt
 
 # Install MCP Proxy for AWS (for Gateway IAM authentication)
-RUN /usr/local/bin/uv tool install --constraints /opt/rapid/mcp-uv-constraints.txt mcp-proxy-for-aws
+RUN /usr/local/bin/uv tool install --constraints /opt/vera/mcp-uv-constraints.txt mcp-proxy-for-aws
 
 # 環境変数の設定
 ENV PORT=8080
@@ -33,7 +33,7 @@ ENV UV_CACHE_DIR=/tmp/.uv
 ENV UV_TOOL_DIR=/tmp/.uv/tools
 # Constrain uvx dependency resolution for MCP servers (mcp<2); inherited by
 # the stdio child processes spawned for the tool preview.
-ENV UV_CONSTRAINT=/opt/rapid/mcp-uv-constraints.txt
+ENV UV_CONSTRAINT=/opt/vera/mcp-uv-constraints.txt
 # NPM/NPX cache directory for Lambda (writable location)
 ENV NPM_CONFIG_CACHE=/tmp/.npm
 ENV NPM_CONFIG_PREFIX=/tmp/.npm-global

@@ -1,4 +1,4 @@
-# RAPID レビューエージェント評価
+# VERA レビューエージェント評価
 
 [English](../README.md) | 日本語
 

@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: RAPIDアプリケーションをデプロイするためのCodeBuildプロジェクト
+Description: VERAアプリケーションをデプロイするためのCodeBuildプロジェクト
 
 Parameters:
   AllowedIpV4AddressRanges:
@@ -85,7 +85,7 @@ Parameters:
 
   RepoUrl:
     Type: String
-    Default: "https://github.com/aws-samples/review-and-assessment-powered-by-intelligent-documentation.git"
+    Default: "https://github.com/hworku24/intelligent-document-review.git"
     Description: デプロイするリポジトリのURL
 
   Branch:
@@ -242,8 +242,8 @@ Resources:
               "build": {
                 "commands": [
                   "echo 'ビルドフェーズを開始します...'",
-                  "if [ ! -z \"$GIT_TAG\" ]; then\n  git clone $REPO_URL rapid\n  cd rapid\n  git checkout $GIT_TAG\n  cd ..\nelse\n  git clone --branch $BRANCH $REPO_URL rapid\nfi",
-                  "cd rapid",
+                  "if [ ! -z \"$GIT_TAG\" ]; then\n  git clone $REPO_URL vera\n  cd vera\n  git checkout $GIT_TAG\n  cd ..\nelse\n  git clone --branch $BRANCH $REPO_URL vera\nfi",
+                  "cd vera",
                   "echo 'パラメータを設定中...'",
                   "echo '/**' > cdk/lib/parameter.ts",
                   "echo ' * CDKデプロイのカスタムパラメータ設定ファイル' >> cdk/lib/parameter.ts",
@@ -297,8 +297,8 @@ Resources:
               "post_build": {
                 "commands": [
                   "echo 'デプロイ完了！'",
-                  "FRONTEND_URL=$(aws cloudformation describe-stacks --stack-name RapidStack --query \"Stacks[0].Outputs[?OutputKey=='FrontendURL'].OutputValue\" --output text)",
-                  "API_URL=$(aws cloudformation describe-stacks --stack-name RapidStack --query \"Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue\" --output text)",
+                  "FRONTEND_URL=$(aws cloudformation describe-stacks --stack-name VeraStack --query \"Stacks[0].Outputs[?OutputKey=='FrontendURL'].OutputValue\" --output text)",
+                  "API_URL=$(aws cloudformation describe-stacks --stack-name VeraStack --query \"Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue\" --output text)",
                   "echo \"フロントエンドURL: $FRONTEND_URL\"",
                   "echo \"API URL: $API_URL\"",
                   "echo \"FrontendURL = $FRONTEND_URL\""

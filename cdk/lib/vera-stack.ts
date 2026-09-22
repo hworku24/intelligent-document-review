@@ -20,17 +20,17 @@ import { Parameters } from "./parameter-schema";
 import { execSync } from "child_process";
 import { ReviewQueueProcessor } from "./constructs/review-queue";
 
-export interface RapidStackProps extends cdk.StackProps {
+export interface VeraStackProps extends cdk.StackProps {
   readonly webAclId?: string;
   readonly enableIpV6?: boolean;
   readonly parameters: Parameters; // カスタムパラメータを追加
 }
 
-export class RapidStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props: RapidStackProps) {
+export class VeraStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props: VeraStackProps) {
     super(scope, id, {
       description:
-        "Rapid Stack for Document Processing and Review (uksb-pr771pp43k)",
+        "Vera Stack for Document Processing and Review (uksb-pr771pp43k)",
       ...props,
     });
 
@@ -98,7 +98,7 @@ export class RapidStack extends cdk.Stack {
     // Closed mode: isolated subnets only, no NAT, no public subnets so there is
     // no internet egress at runtime. All AWS access goes through VPC endpoints.
     // Standard / intermediate: public + private-with-egress + isolated, 1 NAT GW.
-    const vpc = new ec2.Vpc(this, "RapidVpc", {
+    const vpc = new ec2.Vpc(this, "VeraVpc", {
       maxAzs: 2,
       natGateways: closedNetwork ? 0 : 1,
       subnetConfiguration: closedNetwork
@@ -149,7 +149,7 @@ export class RapidStack extends cdk.Stack {
     // データベースの作成
     const database = new Database(this, "Database", {
       vpc,
-      databaseName: "rapid",
+      databaseName: "vera",
       minCapacity: 0.5,
       maxCapacity: 1,
       autoPause: true,

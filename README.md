@@ -87,7 +87,7 @@ The project is still under active development.
 
 Major areas that remain include:
 
-* completing the transition from inherited RAPID naming to the VERA product identity
+* completing the transition from inherited VERA naming to the VERA product identity
 * redesigning terminology and user-facing workflows around Review Standards, Criteria, Assessments, Evidence, and Reviewer Decisions
 * updating internal environment variables, resource names, database identifiers, and infrastructure naming
 * deploying and validating the application in an AWS sandbox environment
@@ -311,11 +311,11 @@ npm run prisma:migrate
 For the current local-development baseline, start the API with:
 
 ```bash
-export RAPID_LOCAL_DEV=true
+export VERA_LOCAL_DEV=true
 npm run dev
 ```
 
-`RAPID_LOCAL_DEV` is an inherited technical identifier and will be migrated to VERA naming as the internal rebrand is completed.
+`VERA_LOCAL_DEV` is an inherited technical identifier and will be migrated to VERA naming as the internal rebrand is completed.
 
 The backend should be available at:
 
@@ -638,7 +638,7 @@ The current baseline runs successfully, but several inherited and unfinished are
 
 These include:
 
-* inherited RAPID identifiers still need to be migrated to VERA
+* inherited VERA identifiers still need to be migrated to VERA
 * frontend ESLint configuration needs repair
 * existing npm dependency vulnerabilities require review
 * the frontend bundle would benefit from additional code splitting

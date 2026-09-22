@@ -1,11 +1,11 @@
 ---
 name: ui-css-patterns
-description: UI/CSS design patterns and component reference for the RAPID frontend, covering color semantics, button variant selection, status badge colors, dark mode, spacing, and component inventory. Use when implementing UI components, choosing button variants or colors, styling with Tailwind CSS, or checking available shared components.
+description: UI/CSS design patterns and component reference for the VERA frontend, covering color semantics, button variant selection, status badge colors, dark mode, spacing, and component inventory. Use when implementing UI components, choosing button variants or colors, styling with Tailwind CSS, or checking available shared components.
 ---
 
 # Frontend UI/CSS Design Patterns
 
-Quick reference for maintaining visual consistency across the RAPID frontend.
+Quick reference for maintaining visual consistency across the VERA frontend.
 
 ## Action Hierarchy & Color Semantics
 

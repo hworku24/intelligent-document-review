@@ -67,7 +67,7 @@ describe("authMiddleware", () => {
     const reply = makeReply();
     verifyMock.mockResolvedValue({
       sub: "user-1",
-      "custom:rapid_role": "admin",
+      "custom:vera_role": "admin",
     });
 
     await authMiddleware(request, reply);

@@ -1,8 +1,8 @@
-# RAPID Recreation Sprint Plan
+# VERA Recreation Sprint Plan
 
 ## Goal
 
-Recreate, understand, customize, and productionize the RAPID document-review application in controlled increments. The target is a deployed application that can turn source documents into checklists, assess uploaded documents with Amazon Bedrock, support human review, and operate securely and reliably.
+Recreate, understand, customize, and productionize the VERA document-review application in controlled increments. The target is a deployed application that can turn source documents into checklists, assess uploaded documents with Amazon Bedrock, support human review, and operate securely and reliably.
 
 ## Working assumptions
 
@@ -82,7 +82,7 @@ Every completed engineering task must meet the following conditions:
 - [x] **S1-02 — Bootstrap the backend**
   - Install locked dependencies with `npm ci`.
   - Generate Prisma artifacts and apply migrations.
-  - Start the Fastify API with `RAPID_LOCAL_DEV=true`.
+  - Start the Fastify API with `VERA_LOCAL_DEV=true`.
   - **Acceptance:** `GET /health` succeeds and backend build/tests pass.
 
 - [x] **S1-03 — Bootstrap the frontend**
@@ -146,7 +146,7 @@ Every completed engineering task must meet the following conditions:
   - **Acceptance:** Frontend URL, API, database, workflows, storage, and authentication resources are healthy.
 
 - [ ] **S2-06 — Configure initial administrator access**
-  - Create or designate a test user and set the required `custom:rapid_role` attribute.
+  - Create or designate a test user and set the required `custom:vera_role` attribute.
   - Test sign-in, sign-out, token expiry, and admin-only access.
   - **Acceptance:** An authorized administrator can use the deployed UI and an unauthorized user cannot access admin features.
 
@@ -220,7 +220,7 @@ Every completed engineering task must meet the following conditions:
 - [ ] **S4-02 — Implement visual and content customization**
   - Update product copy, metadata, theme tokens, and permitted assets.
   - Preserve shared components, `react-icons`, and existing Tailwind configuration rules.
-  - **Acceptance:** No unintended RAPID/sample branding remains in user-facing screens.
+  - **Acceptance:** No unintended VERA/sample branding remains in user-facing screens.
 
 - [ ] **S4-03 — Improve onboarding and empty states**
   - Guide users through creating a checklist, uploading review documents, and interpreting results.

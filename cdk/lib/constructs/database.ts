@@ -47,12 +47,12 @@ export class Database extends Construct {
     super(scope, id);
 
     // データベース名の設定
-    const databaseName = props.databaseName || "rapid";
+    const databaseName = props.databaseName || "vera";
 
     // セキュリティグループの作成
     this.securityGroup = new ec2.SecurityGroup(this, "DatabaseSecurityGroup", {
       vpc: props.vpc,
-      description: "Security group for RAPID database",
+      description: "Security group for VERA database",
       allowAllOutbound: true,
     });
 
@@ -113,8 +113,8 @@ export class Database extends Construct {
     };
 
     // マネジメントコンソールからのアクセスを許可するためのタグを追加
-    cdk.Tags.of(this.cluster).add("Name", `RAPID-${databaseName}`);
-    cdk.Tags.of(this.cluster).add("Project", "RAPID");
+    cdk.Tags.of(this.cluster).add("Name", `VERA-${databaseName}`);
+    cdk.Tags.of(this.cluster).add("Project", "VERA");
 
     // Suppress RDS deletion protection (AwsSolutions-RDS10)
     NagSuppressions.addResourceSuppressions(

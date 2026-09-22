@@ -1,6 +1,6 @@
 # Local Development
 
-This document describes how to run RAPID's backend and frontend on your machine for development. For the architecture, see the [Developer Guide](./developer-guide.md#architecture); for deploying the application, see the [README](../../README.md#deployment-methods).
+This document describes how to run VERA's backend and frontend on your machine for development. For the architecture, see the [Developer Guide](./developer-guide.md#architecture); for deploying the application, see the [README](../../README.md#deployment-methods).
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ This document describes how to run RAPID's backend and frontend on your machine 
 - **Docker / Docker Compose** — runs the local MySQL database
 - **AWS CLI (configured)** — used to create Cognito users and to connect optional features to your deployed stack
 - **Python 3.13+ and [uv](https://docs.astral.sh/uv/)** — needed only when working on the review agent (`review-item-processor/`)
-- **A deployed `RapidStack`** — the frontend signs in against the deployed Amazon Cognito User Pool (the frontend has no local auth bypass), and upload / workflow features call the deployed AWS resources
+- **A deployed `VeraStack`** — the frontend signs in against the deployed Amazon Cognito User Pool (the frontend has no local auth bypass), and upload / workflow features call the deployed AWS resources
 
 ## Backend Setup
 
@@ -35,7 +35,7 @@ docker compose -f assets/local/docker-compose.yml up -d
 This starts a MySQL 8.0 container (the same MySQL version the deployed Aurora MySQL version 3 is compatible with) using:
 
 - Host: `localhost` / Port: `3306`
-- Database: `rapid` / User: `rapid_user` / Password: `rapid_password`
+- Database: `vera` / User: `vera_user` / Password: `vera_password`
 
 The bundled init script grants the privileges Prisma needs to create its shadow database, so `prisma migrate dev` works out of the box. To reset the data, delete the volume and start the container again:
 
@@ -51,7 +51,7 @@ docker compose -f assets/local/docker-compose.yml up -d
 ```bash
 cd backend
 npm ci
-export DATABASE_URL="mysql://rapid_user:rapid_password@localhost:3306/rapid"
+export DATABASE_URL="mysql://vera_user:vera_password@localhost:3306/vera"
 npm run prisma:generate
 npm run prisma:migrate
 ```
@@ -61,15 +61,15 @@ The repository already contains the tracked `backend/prisma/.env` local-developm
 ### 3. Set environment variables
 
 ```bash
-export RAPID_LOCAL_DEV=true
+export VERA_LOCAL_DEV=true
 ```
 
-`RAPID_LOCAL_DEV=true` bypasses authentication on the local backend: every request runs as a mock **admin** user (the flag has no effect on Lambda).
+`VERA_LOCAL_DEV=true` bypasses authentication on the local backend: every request runs as a mock **admin** user (the flag has no effect on Lambda).
 
 Optionally, point the local backend at the resources of your deployed stack. This enables document upload / download (Amazon S3 presigned URLs), submitting checklist extraction and review jobs, ambiguity detection, and the per-item model selection list:
 
 ```bash
-export AWS_REGION="<region of your RapidStack>"
+export AWS_REGION="<region of your VeraStack>"
 export DOCUMENT_BUCKET="<document bucket name>"
 export DOCUMENT_PROCESSING_STATE_MACHINE_ARN="<Checklist Processor state machine ARN>"
 export REVIEW_QUEUE_URL="<review queue URL>"
@@ -98,7 +98,7 @@ cp .env.example .env.local
 
 Edit `.env.local`:
 
-- `VITE_APP_USER_POOL_ID` / `VITE_APP_USER_POOL_CLIENT_ID` / `VITE_APP_REGION` — from the CDK deploy outputs (`RapidStack.AuthUserPoolId...` / `RapidStack.AuthUserPoolClientId...`) or the Amazon Cognito console
+- `VITE_APP_USER_POOL_ID` / `VITE_APP_USER_POOL_CLIENT_ID` / `VITE_APP_REGION` — from the CDK deploy outputs (`VeraStack.AuthUserPoolId...` / `VeraStack.AuthUserPoolClientId...`) or the Amazon Cognito console
 - `VITE_APP_API_ENDPOINT` — `http://localhost:3000` for the local backend (also the fallback when unset)
 
 Then start the development server:
@@ -108,7 +108,7 @@ cd frontend
 npm run dev
 ```
 
-The frontend starts at `http://localhost:5173`. Sign in with a user of the deployed User Pool (see [Admin Initial Setup](../../README.md#admin-initial-setup)): backend authorization is bypassed by `RAPID_LOCAL_DEV`, but the frontend sign-in screen itself requires a real Cognito user.
+The frontend starts at `http://localhost:5173`. Sign in with a user of the deployed User Pool (see [Admin Initial Setup](../../README.md#admin-initial-setup)): backend authorization is bypassed by `VERA_LOCAL_DEV`, but the frontend sign-in screen itself requires a real Cognito user.
 
 ## Verification
 

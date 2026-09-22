@@ -14,7 +14,7 @@
 ## Project Structure
 
 ```
-beacon/
+intelligent-document-review/
 ├── backend/                 # Fastify REST API (TypeScript, ESM)
 ├── frontend/                # React SPA, Vite + Tailwind CSS
 ├── cdk/                     # AWS CDK infrastructure
@@ -23,7 +23,7 @@ beacon/
 
 ## Skills
 
-- **`/plan-backend-frontend`** - Plan features with RAPID layered architecture
+- **`/plan-backend-frontend`** - Plan features with VERA layered architecture
 - **`/build-and-format`** - Build verification and formatting
 - **`/test-database-feature`** - Repository integration tests with local MySQL
 - **`/deploy-cdk-stack`** - CDK deployment (only when explicitly asked)

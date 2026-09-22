@@ -13,7 +13,7 @@ export const isLocalDevelopment = (): boolean => {
 
   // ローカル開発環境の判定
   // Lambda環境でなく、かつ明示的にローカル開発モードが指定されている場合
-  return !isLambdaEnvironment && process.env.RAPID_LOCAL_DEV === "true";
+  return !isLambdaEnvironment && process.env.VERA_LOCAL_DEV === "true";
 };
 
 /**

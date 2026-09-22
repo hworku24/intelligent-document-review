@@ -1,6 +1,6 @@
 ---
 name: test-database-feature
-description: Run repository integration tests against a local MySQL database for the RAPID backend. Use after implementing new repository methods, modifying Prisma database schema, testing use cases that depend on database access, or verifying data access patterns.
+description: Run repository integration tests against a local MySQL database for the VERA backend. Use after implementing new repository methods, modifying Prisma database schema, testing use cases that depend on database access, or verifying data access patterns.
 ---
 
 # Test Database Feature
@@ -13,7 +13,7 @@ description: Run repository integration tests against a local MySQL database for
 docker-compose -f assets/local/docker-compose.yml up -d
 ```
 
-Database: `localhost:3306`, DB: `rapid_db`, User: `rapid_user`, Password: `rapid_password`
+Database: `localhost:3306`, DB: `vera`, User: `vera_user`, Password: `vera_password`
 
 ### 2. Setup Prisma
 
