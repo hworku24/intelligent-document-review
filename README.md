@@ -4,7 +4,7 @@
 
 VERA is an AI-assisted document review platform built on AWS. It helps users turn policies, regulations, standards, guidelines, and other source documents into structured review criteria, then evaluate uploaded documents against those criteria.
 
-Instead of returning only a simple pass or fail result, VERA is designed to show the evidence behind an assessment. Each result can include an explanation, confidence information, source references, and model activity so a human reviewer can understand how the conclusion was reached.
+Instead of returning only a pass or fail result, VERA is designed to show the evidence behind an assessment. Each result can include an explanation, confidence information, source references, and model activity so a human reviewer can understand how the conclusion was reached.
 
 The goal is not to automate professional judgment. The goal is to make document review faster, more structured, and easier to verify.
 
@@ -22,7 +22,6 @@ A typical VERA workflow looks like this:
 4. The reviewer uploads one or more documents for assessment.
 5. VERA evaluates the document against each criterion.
 6. Each criterion receives a result such as:
-
    * **Meets**
    * **Needs Review**
    * **Does Not Meet**
@@ -49,6 +48,14 @@ That process can involve:
 VERA explores how generative AI and cloud workflows can assist with these tasks while keeping evidence, traceability, and human review at the center of the system.
 
 The project also covers the full lifecycle of an AI application, including frontend development, APIs, databases, asynchronous workflows, cloud infrastructure, generative AI, evaluation, security, observability, and human-centered product design.
+
+---
+
+## Project Foundation
+
+VERA uses an open-source AWS document-review reference implementation as part of its technical foundation. The project is being developed around an evidence-centered, human-in-the-loop review workflow, with VERA-specific terminology, product design, validation logic, reviewer controls, evaluation, and deployment work layered on top of that foundation.
+
+The repository preserves the applicable open-source license and commit history so the technical lineage remains transparent.
 
 ---
 
@@ -87,11 +94,12 @@ The project is still under active development.
 
 Major areas that remain include:
 
-* completing the transition from inherited VERA naming to the VERA product identity
-* redesigning terminology and user-facing workflows around Review Standards, Criteria, Assessments, Evidence, and Reviewer Decisions
-* updating internal environment variables, resource names, database identifiers, and infrastructure naming
+* completing VERA terminology and user-facing workflow updates around Review Standards, Criteria, Assessments, Evidence, and Reviewer Decisions
+* standardizing internal environment variables, resource names, database identifiers, and infrastructure naming
 * deploying and validating the application in an AWS sandbox environment
 * testing the complete document upload, extraction, assessment, and human-review workflow
+* adding structured field extraction with Amazon Textract where appropriate
+* adding deterministic validation and SQL-backed reference matching
 * improving onboarding, navigation, empty states, and user-facing error handling
 * building representative synthetic test documents and evaluation datasets
 * measuring model accuracy, latency, token usage, cost, false positives, and false negatives
@@ -102,7 +110,7 @@ Major areas that remain include:
 * reviewing IAM permissions, storage policies, networking, and data retention
 * adding operational dashboards, alerts, tracing, and cost monitoring
 * testing failure recovery and queue behavior
-* addressing existing dependency and frontend linting issues
+* resolving current dependency and frontend linting issues
 * improving frontend bundle performance
 * validating accessibility and responsive behavior
 * preparing the project for repeatable deployment and pilot use
@@ -115,17 +123,17 @@ The goal is to move from a locally verified technical baseline to a complete, se
 
 VERA uses terminology centered around evidence and human review.
 
-| Concept           | VERA Term         |
-| ----------------- | ----------------- |
-| Checklist         | Review Standard   |
-| Checklist Item    | Criterion         |
-| Review            | Assessment        |
-| Pass              | Meets             |
-| Fail              | Does Not Meet     |
-| Ambiguous Result  | Needs Review      |
-| Model Reasoning   | Analysis          |
-| Source References | Evidence          |
-| Final Judgment    | Reviewer Decision |
+| Concept | VERA Term |
+| --- | --- |
+| Checklist | Review Standard |
+| Checklist Item | Criterion |
+| Review | Assessment |
+| Pass | Meets |
+| Fail | Does Not Meet |
+| Ambiguous Result | Needs Review |
+| Model Reasoning | Analysis |
+| Source References | Evidence |
+| Final Judgment | Reviewer Decision |
 
 ---
 
@@ -172,23 +180,23 @@ The system separates the web application, data layer, document storage, workflow
 
 ## Technology Stack
 
-| Area             | Technology                                 |
-| ---------------- | ------------------------------------------ |
-| Frontend         | React, TypeScript, Vite, Tailwind CSS, SWR |
-| Backend          | Fastify, TypeScript, Prisma                |
-| Local Database   | MySQL 8 with Docker                        |
-| Cloud Database   | Amazon Aurora MySQL Serverless v2          |
-| Authentication   | Amazon Cognito                             |
-| Document Storage | Amazon S3                                  |
-| AI               | Amazon Bedrock                             |
-| Agent Framework  | Strands Agents                             |
-| Agent Runtime    | Amazon Bedrock AgentCore                   |
-| Workflows        | AWS Step Functions                         |
-| Messaging        | Amazon SQS                                 |
-| Infrastructure   | AWS CDK                                    |
-| Python           | Python 3.13+, uv                           |
-| Testing          | Jest, Pytest                               |
-| Containers       | Docker                                     |
+| Area | Technology |
+| --- | --- |
+| Frontend | React, TypeScript, Vite, Tailwind CSS, SWR |
+| Backend | Fastify, TypeScript, Prisma |
+| Local Database | MySQL 8 with Docker |
+| Cloud Database | Amazon Aurora MySQL Serverless v2 |
+| Authentication | Amazon Cognito |
+| Document Storage | Amazon S3 |
+| AI | Amazon Bedrock |
+| Agent Framework | Strands Agents |
+| Agent Runtime | Amazon Bedrock AgentCore |
+| Workflows | AWS Step Functions |
+| Messaging | Amazon SQS |
+| Infrastructure | AWS CDK |
+| Python | Python 3.13+, uv |
+| Testing | Jest, Pytest |
+| Containers | Docker |
 
 ---
 
@@ -198,31 +206,22 @@ The system separates the web application, data layer, document storage, workflow
 .
 ├── backend/
 │   └── Fastify API, Prisma models, and application services
-│
 ├── frontend/
 │   └── React web application
-│
 ├── cdk/
 │   └── AWS infrastructure definitions
-│
 ├── review-item-processor/
 │   └── Python AI review agent
-│
 ├── assets/
 │   └── Local development infrastructure
-│
 ├── examples/
 │   └── Sample documents for testing
-│
 ├── docs/
 │   └── Architecture and developer documentation
-│
 ├── scripts/
 │   └── Local development and verification utilities
-│
 ├── SPRINT_PLAN.md
 │   └── Development planning and task tracking
-│
 └── SPRINT_1_REPORT.md
     └── Initial local setup and verification record
 ```
@@ -260,8 +259,6 @@ uv --version
 aws --version
 ```
 
----
-
 ## 1. Start the Local Database
 
 From the repository root:
@@ -276,52 +273,20 @@ Check that the container is running:
 docker compose -f assets/local/docker-compose.yml ps
 ```
 
-The current development database configuration is inherited from the original project and will be renamed as the VERA migration progresses.
-
 Do not reuse local development credentials in a deployed environment.
-
----
 
 ## 2. Start the Backend
 
-Move into the backend:
-
 ```bash
 cd backend
-```
-
-Install dependencies:
-
-```bash
 npm ci
-```
-
-Generate the Prisma client:
-
-```bash
 npm run prisma:generate
-```
-
-Apply database migrations:
-
-```bash
 npm run prisma:migrate
-```
-
-For the current local-development baseline, start the API with:
-
-```bash
 export VERA_LOCAL_DEV=true
 npm run dev
 ```
 
-`VERA_LOCAL_DEV` is an inherited technical identifier and will be migrated to VERA naming as the internal rebrand is completed.
-
-The backend should be available at:
-
-```text
-http://localhost:3000
-```
+The backend should be available at `http://localhost:3000`.
 
 Check its health:
 
@@ -337,49 +302,22 @@ Expected response:
 }
 ```
 
----
-
 ## 3. Start the Frontend
 
-Open a second Terminal window.
-
-From the repository root:
+Open a second Terminal window and run:
 
 ```bash
 cd frontend
-```
-
-Install dependencies:
-
-```bash
 npm ci
-```
-
-Create your local environment file:
-
-```bash
 cp .env.example .env.local
-```
-
-Then start Vite:
-
-```bash
 npm run dev
 ```
 
-The frontend should be available at:
-
-```text
-http://localhost:5173
-```
-
----
+The frontend should be available at `http://localhost:5173`.
 
 ## Authentication
 
-The backend supports a local development authentication mode.
-
-The frontend currently still depends on Amazon Cognito for full sign-in behavior.
+The backend supports a local development authentication mode. The frontend currently depends on Amazon Cognito for full sign-in behavior.
 
 A deployed environment provides values similar to:
 
@@ -392,25 +330,11 @@ VITE_APP_API_ENDPOINT=http://localhost:3000
 
 Do not commit real credentials, tokens, AWS account information, or secrets.
 
----
-
 ## 4. Prepare the AI Review Agent
-
-From the repository root:
 
 ```bash
 cd review-item-processor
-```
-
-Install dependencies:
-
-```bash
 uv sync --extra dev
-```
-
-Run tests:
-
-```bash
 uv run pytest
 ```
 
@@ -426,61 +350,7 @@ Once dependencies are installed and MySQL is running, return to the repository r
 ./scripts/verify-local.sh
 ```
 
-This provides a single verification workflow across the major packages.
-
-The script checks relevant formatting, tests, builds, and package health without automatically deleting or resetting the local database.
-
----
-
-## Useful Commands
-
-### Check MySQL
-
-```bash
-docker compose -f assets/local/docker-compose.yml ps
-```
-
-### Stop MySQL
-
-```bash
-docker compose -f assets/local/docker-compose.yml down
-```
-
-This preserves the Docker volume unless it is explicitly removed.
-
-### Open Prisma Studio
-
-```bash
-cd backend
-npm run prisma:studio
-```
-
-Then open:
-
-```text
-http://localhost:5555
-```
-
-### Run Backend Tests
-
-```bash
-cd backend
-npm test
-```
-
-### Build the Frontend
-
-```bash
-cd frontend
-npm run build
-```
-
-### Run CDK Tests
-
-```bash
-cd cdk
-npm test -- --runInBand
-```
+This provides a single verification workflow across the major packages without automatically deleting or resetting the local database.
 
 ---
 
@@ -488,30 +358,16 @@ npm test -- --runInBand
 
 VERA is designed to run on AWS using managed services for authentication, storage, workflows, relational data, and generative AI.
 
-The cloud architecture includes resources for:
-
-* authentication
-* document storage
-* APIs
-* relational data
-* asynchronous processing
-* AI inference
-* workflow orchestration
-* networking
-* monitoring
-
 Before deploying:
 
 1. Use a sandbox AWS account.
 2. Confirm the intended AWS region.
 3. Confirm Amazon Bedrock model availability.
-4. Review AWS service quotas.
-5. Review estimated costs.
-6. Restrict network access where possible.
-7. Review Cognito configuration.
-8. Review IAM permissions.
-9. Inspect the CDK diff.
-10. Confirm how the environment will be destroyed after testing.
+4. Review AWS service quotas and estimated costs.
+5. Restrict network access where possible.
+6. Review Cognito configuration and IAM permissions.
+7. Inspect the CDK diff.
+8. Confirm teardown behavior before testing.
 
 Docker must be running during CDK deployment because parts of the application are packaged as container images.
 
@@ -525,9 +381,7 @@ npx cdk bootstrap
 npm run deploy
 ```
 
-Do not deploy the full stack casually.
-
-Services such as Aurora Serverless, Bedrock, networking infrastructure, storage, and other managed AWS resources may generate ongoing charges.
+Services such as Aurora Serverless, Bedrock, networking infrastructure, and storage may generate ongoing charges.
 
 ---
 
@@ -535,13 +389,12 @@ Services such as Aurora Serverless, Bedrock, networking infrastructure, storage,
 
 Development work is organized into sprints so changes can be made, tested, and documented in manageable increments.
 
-The sprint structure is a project-management method rather than a description of the VERA product itself.
-
-Current planning covers work such as:
+Current planning covers:
 
 * local development
-* product identity and terminology
+* product terminology and workflows
 * AWS infrastructure
+* structured extraction and deterministic validation
 * core assessment workflows
 * user experience
 * AI evaluation
@@ -551,7 +404,7 @@ Current planning covers work such as:
 * deployment
 * release preparation
 
-Detailed engineering tasks, dependencies, acceptance criteria, and completed work are tracked in [`SPRINT_PLAN.md`](./SPRINT_PLAN.md).
+Detailed engineering tasks and acceptance criteria are tracked in [`SPRINT_PLAN.md`](./SPRINT_PLAN.md).
 
 ---
 
@@ -559,7 +412,7 @@ Detailed engineering tasks, dependencies, acceptance criteria, and completed wor
 
 A major part of VERA is evaluating the quality of the AI system rather than simply connecting an application to a language model.
 
-Evaluation work includes areas such as:
+Evaluation work includes:
 
 * criterion extraction accuracy
 * false positive assessments
@@ -596,14 +449,7 @@ Human Review
 Reviewer Decision
 ```
 
-A reviewer should be able to:
-
-* inspect the evidence
-* review the AI explanation
-* see uncertainty
-* override an assessment
-* leave feedback
-* make the final decision
+A reviewer should be able to inspect the evidence, review the explanation, see uncertainty, override an assessment, leave feedback, and make the final decision.
 
 The AI-generated assessment and the human decision should remain separately identifiable in the system.
 
@@ -615,8 +461,7 @@ Uploaded documents should always be treated as untrusted input.
 
 Development and deployment should follow several basic principles:
 
-* never commit credentials
-* never commit authentication tokens
+* never commit credentials or authentication tokens
 * never commit private user documents
 * use synthetic documents during development whenever possible
 * validate uploaded file types
@@ -634,11 +479,8 @@ Development and deployment should follow several basic principles:
 
 # Known Baseline Issues
 
-The current baseline runs successfully, but several inherited and unfinished areas still need work.
+The current baseline runs successfully, but several areas still need work:
 
-These include:
-
-* inherited VERA identifiers still need to be migrated to VERA
 * frontend ESLint configuration needs repair
 * existing npm dependency vulnerabilities require review
 * the frontend bundle would benefit from additional code splitting
@@ -647,4 +489,10 @@ These include:
 * AWS infrastructure defaults need additional review
 * full cloud workflows have not yet been validated end to end
 * AI evaluation and regression testing are still being developed
-* security and failure-recovery testing s
+* security and failure-recovery testing remain in progress
+
+---
+
+# License
+
+See [`LICENSE`](./LICENSE) for the repository license and applicable copyright notice.
