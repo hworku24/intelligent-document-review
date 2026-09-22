@@ -1,59 +1,70 @@
-# Contributing Guidelines
+# Contributing to VERA
 
-Thank you for your interest in contributing to our project. Whether it's a bug report, new feature, correction, or additional
-documentation, we greatly value feedback and contributions from our community.
+Thanks for your interest in contributing to VERA.
 
-Please read through this document before submitting any issues or pull requests to ensure we have all the necessary
-information to effectively respond to your bug report or contribution.
+VERA is under active development. Contributions should be focused, testable, and consistent with the project's human-in-the-loop design.
 
+## Reporting Bugs and Feature Requests
 
-## Reporting Bugs/Feature Requests
+Use the GitHub issue tracker to report bugs or suggest features.
 
-We welcome you to use the GitHub issue tracker to report bugs or suggest features.
+Please include:
 
-When filing an issue, please check existing open, or recently closed, issues to make sure somebody else hasn't already
-reported the issue. Please try to include as much information as you can. Details like these are incredibly useful:
+- a clear description of the issue or request
+- steps to reproduce the behavior when applicable
+- the environment or package involved
+- relevant logs or screenshots with secrets removed
+- the expected behavior
 
-* A reproducible test case or series of steps
-* The version of our code being used
-* Any modifications you've made relevant to the bug
-* Anything unusual about your environment or deployment
+Do not include credentials, private documents, authentication tokens, AWS account information, or other sensitive data in an issue.
 
+## Pull Requests
 
-## Contributing via Pull Requests
-Contributions via pull requests are much appreciated. Before sending us a pull request, please ensure that:
+Before opening a pull request:
 
-1. You are working against the latest source on the *main* branch.
-2. You check existing open, and recently merged, pull requests to make sure someone else hasn't addressed the problem already.
-3. You open an issue to discuss any significant work - we would hate for your time to be wasted.
+1. Work from the latest `main` branch.
+2. Keep the change focused on one problem or feature.
+3. Run the relevant tests, formatting, and builds.
+4. Update documentation when behavior or setup changes.
+5. Avoid committing generated secrets, local environment files, or private documents.
 
-To send us a pull request, please:
+### Project Verification
 
-1. Fork the repository.
-2. Modify the source; please focus on the specific change you are contributing. If you also reformat all the code, it will be hard for us to focus on your change.
-3. Ensure local tests pass.
-4. Commit to your fork using clear commit messages.
-5. Send us a pull request, answering any default questions in the pull request interface.
-6. Pay attention to any automated CI failures reported in the pull request, and stay involved in the conversation.
+For broad changes, run:
 
-GitHub provides additional document on [forking a repository](https://help.github.com/articles/fork-a-repo/) and
-[creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
+```bash
+./scripts/verify-local.sh
+```
 
+Package-specific checks may also be required:
 
-## Finding contributions to work on
-Looking at the existing issues is a great way to find something to contribute on. As our projects, by default, use the default GitHub issue labels (enhancement/bug/duplicate/help wanted/invalid/question/wontfix), looking at any 'help wanted' issues is a great place to start.
+```bash
+cd backend && npm run format && npm test && npm run build
+cd frontend && npm run format && npm run build
+cd cdk && npm test -- --runInBand && npm run build
+cd review-item-processor && uv run pytest
+```
 
+Some tests depend on deployed AWS resources and may be skipped locally.
 
-## Code of Conduct
-This project has adopted the [Amazon Open Source Code of Conduct](https://aws.github.io/code-of-conduct).
-For more information see the [Code of Conduct FAQ](https://aws.github.io/code-of-conduct-faq) or contact
-opensource-codeofconduct@amazon.com with any additional questions or comments.
+## Engineering Principles
 
+Contributions should preserve these project principles:
 
-## Security issue notifications
-If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public github issue.
+- final decisions remain with human reviewers
+- AI-generated analysis should be distinguishable from deterministic validation and human decisions
+- evidence and source references should be traceable
+- uploaded documents should be treated as untrusted input
+- authorization boundaries should be explicit and testable
+- sensitive information should not be written to logs
+- AWS changes should be reviewed for cost and least-privilege access
 
+## Security Issues
 
-## Licensing
+Do not publish sensitive vulnerability details in a public issue.
 
-See the [LICENSE](LICENSE) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
+If you identify a security problem, open a minimal issue stating that a security concern exists without including exploit details or sensitive information. Coordinate further disclosure privately with the repository owner.
+
+## License
+
+By contributing, you agree that your contribution may be distributed under the terms in the repository's [`LICENSE`](LICENSE) file.
