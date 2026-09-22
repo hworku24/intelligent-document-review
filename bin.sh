@@ -1,13 +1,7 @@
 #!/bin/bash
 echo ""
 echo "==========================================================================="
-echo "    ____  ___    ____  ________  "
-echo "   / __ \\/   |  / __ \\/  _/ __ \\ "
-echo "  / /_/ / /| | / /_/ // // / / / "
-echo " / _, _/ ___ |/ ____// // /_/ /  "
-echo "/_/ |_/_/  |_/_/   /___/_____/   "
-echo ""
-echo "Verification and Evidence Review Assistant"
+echo "  VERA - Verification and Evidence Review Assistant"
 echo "---------------------------------------------------------------------------"
 echo "  This script deploys the VERA application using AWS CodeBuild."
 echo "  No local environment dependencies - deployment runs entirely in AWS."
@@ -235,7 +229,6 @@ if [[ "$buildStatus" != "SUCCEEDED" ]]; then
   echo "Log Stream Name: $logStreamName"
   echo "You can check the logs with the following command:"
   echo "aws logs get-log-events --log-group-name $logGroupName --log-stream-name $logStreamName"
-  # Cleanup before exit
   cd ..
   rm -rf "$WORK_DIR"
   exit 1
@@ -249,14 +242,13 @@ echo "Retrieving CDK deployment logs..."
 logs=$(aws logs get-log-events --log-group-name $logGroupName --log-stream-name $logStreamName)
 frontendUrl=$(echo "$logs" | grep -o 'FrontendURL = [^ ]*' | cut -d' ' -f3 | tr -d '\n,')
 
-# Cleanup process
 cd ..
 echo "Cleaning up working directory: $WORK_DIR"
 rm -rf "$WORK_DIR"
 
 echo ""
 echo "==========================================================================="
-echo "  🎉 Deployment completed successfully!                                    "
+echo "  🎉 Deployment completed successfully!"
 echo "---------------------------------------------------------------------------"
 echo "  Frontend URL: $frontendUrl"
 echo ""
